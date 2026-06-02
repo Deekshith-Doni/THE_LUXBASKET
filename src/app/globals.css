@@ -1,0 +1,297 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   GOOGLE FONTS
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES — LUXURY DESIGN TOKENS
+   ============================================================ */
+:root {
+  --emerald:        #0F3D3E;
+  --emerald-dark:   #0A2829;
+  --emerald-light:  #1A5254;
+  --gold:           #D4AF37;
+  --gold-light:     #E8C860;
+  --gold-dark:      #B8960C;
+  --ivory:          #F8F5F0;
+  --ivory-dark:     #EDE9E3;
+  --charcoal:       #2B2B2B;
+  --charcoal-light: #3D3D3D;
+  --beige:          #E8DDCF;
+  --beige-dark:     #D4C5B0;
+  --beige-light:    #F2EDE6;
+  --white:          #FFFFFF;
+
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body:    'Inter', sans-serif;
+
+  --transition-fast:   150ms ease;
+  --transition-base:   300ms ease;
+  --transition-slow:   600ms ease;
+
+  --shadow-card:       0 4px 30px rgba(0,0,0,0.08);
+  --shadow-card-hover: 0 20px 60px rgba(0,0,0,0.15);
+  --shadow-luxury:     0 25px 60px -12px rgba(15,61,62,0.3);
+  --shadow-gold:       0 10px 40px -10px rgba(212,175,55,0.5);
+
+  --radius-sm:   0.5rem;
+  --radius-md:   1rem;
+  --radius-lg:   1.5rem;
+  --radius-xl:   2rem;
+}
+
+/* ============================================================
+   BASE RESET & BODY
+   ============================================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Selection Color */
+::selection {
+  background-color: var(--gold);
+  color: var(--emerald-dark);
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--charcoal);
+}
+
+.font-heading { font-family: var(--font-heading); }
+.font-body    { font-family: var(--font-body); }
+
+/* ============================================================
+   LUXURY SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track { background: var(--ivory-dark); }
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+@layer components {
+
+  /* --- Gold Divider --- */
+  .gold-divider {
+    @apply w-16 h-px bg-gold mx-auto;
+  }
+
+  /* --- Section Headers --- */
+  .section-tag {
+    @apply inline-block text-xs font-semibold tracking-[0.25em] uppercase text-gold font-body;
+  }
+  .section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl font-heading font-medium text-charcoal leading-tight;
+  }
+  .section-subtitle {
+    @apply text-base md:text-lg text-charcoal/60 font-body font-light max-w-2xl;
+  }
+
+  /* --- Luxury Buttons --- */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-8 py-4 bg-emerald text-ivory font-body font-medium
+           text-sm tracking-widest uppercase rounded-none
+           transition-all duration-300
+           hover:bg-emerald-dark hover:shadow-luxury hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2;
+  }
+  .btn-gold {
+    @apply inline-flex items-center gap-2 px-8 py-4 bg-gold text-emerald-dark font-body font-semibold
+           text-sm tracking-widest uppercase rounded-none
+           transition-all duration-300
+           hover:bg-gold-light hover:shadow-gold hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-8 py-4 border border-emerald text-emerald font-body font-medium
+           text-sm tracking-widest uppercase rounded-none bg-transparent
+           transition-all duration-300
+           hover:bg-emerald hover:text-ivory hover:-translate-y-0.5
+           focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2;
+  }
+  .btn-outline-gold {
+    @apply inline-flex items-center gap-2 px-8 py-4 border border-gold text-gold font-body font-medium
+           text-sm tracking-widest uppercase rounded-none bg-transparent
+           transition-all duration-300
+           hover:bg-gold hover:text-emerald-dark hover:-translate-y-0.5;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-charcoal font-body font-medium
+           text-sm tracking-wide rounded-none bg-transparent
+           transition-all duration-200
+           hover:text-emerald hover:bg-beige-light;
+  }
+
+  /* --- Glass Card --- */
+  .glass-card {
+    @apply backdrop-blur-md bg-white/10 border border-white/20 shadow-glass;
+  }
+  .glass-card-dark {
+    @apply backdrop-blur-md bg-emerald/10 border border-emerald/20 shadow-glass;
+  }
+
+  /* --- Product Card --- */
+  .product-card {
+    @apply bg-white rounded-none overflow-hidden shadow-card
+           transition-all duration-400
+           hover:shadow-card-hover hover:-translate-y-1;
+  }
+
+  /* --- Form Input --- */
+  .luxury-input {
+    @apply w-full px-4 py-3 bg-white border border-beige-dark text-charcoal font-body text-sm
+           placeholder:text-charcoal/40 rounded-none
+           transition-all duration-200
+           focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30;
+  }
+
+  .luxury-label {
+    @apply block text-xs font-semibold tracking-widest uppercase text-charcoal/60 font-body mb-1.5;
+  }
+
+  /* --- Badge --- */
+  .badge-gold {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-semibold tracking-wide
+           bg-gold/10 text-gold-dark border border-gold/20 rounded-full;
+  }
+  .badge-emerald {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-semibold tracking-wide
+           bg-emerald/10 text-emerald border border-emerald/20 rounded-full;
+  }
+  .badge-sale {
+    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-bold tracking-wide
+           bg-red-500 text-white rounded-full;
+  }
+
+  /* --- Container --- */
+  .container-luxury {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* --- Page Section --- */
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  /* --- Skeleton --- */
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-beige via-ivory to-beige bg-[length:200%_100%];
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* --- Gold Accent Line --- */
+  .accent-line {
+    @apply block w-12 h-0.5 bg-gradient-gold mt-4;
+  }
+
+  /* --- Overlay --- */
+  .overlay-dark {
+    @apply absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent;
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .bg-luxury    { background: linear-gradient(135deg, #0F3D3E 0%, #0A2829 50%, #1A5254 100%); }
+  .bg-gold-grad { background: linear-gradient(135deg, #D4AF37 0%, #E8C860 50%, #B8960C 100%); }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #D4AF37, #E8C860);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-emerald {
+    background: linear-gradient(135deg, #0F3D3E, #1A5254);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ============================================================
+   PAGE TRANSITIONS
+   ============================================================ */
+.page-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee { animation: marquee 25s linear infinite; }
+
+/* ============================================================
+   SWIPER OVERRIDES
+   ============================================================ */
+.swiper-pagination-bullet {
+  background: var(--gold) !important;
+  opacity: 0.4 !important;
+  width: 6px !important;
+  height: 6px !important;
+}
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  width: 20px !important;
+  border-radius: 3px !important;
+}
+.swiper-button-next,
+.swiper-button-prev {
+  color: var(--gold) !important;
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 18px !important;
+}

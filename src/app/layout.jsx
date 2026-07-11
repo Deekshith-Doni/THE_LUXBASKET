@@ -25,8 +25,8 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: "The LuxBasket | Premium Luxury Gifting",
-    template: "%s | The LuxBasket",
+    default: "The Lux Basket | The Finer Way to Gifting",
+    template: "%s | The Lux Basket",
   },
   description:
     "India's most premium gifting brand. Luxury hampers, corporate gifts, wedding return gifts, festive hampers & customized gifts. Crafted with love, delivered with elegance.",
@@ -38,23 +38,23 @@ export const metadata = {
     "festive hampers",
     "customized gifts",
     "gift baskets India",
-    "The LuxBasket",
+    "The Lux Basket",
   ],
-  authors: [{ name: "The LuxBasket" }],
-  creator: "The LuxBasket",
+  authors: [{ name: "The Lux Basket" }],
+  creator: "The Lux Basket",
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: "The LuxBasket",
-    title: "The LuxBasket | Premium Luxury Gifting",
+    siteName: "The Lux Basket",
+    title: "The Lux Basket | Premium Luxury Gifting",
     description:
       "India's most premium gifting brand. Luxury hampers, corporate gifts, wedding return gifts & customized gifts.",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The LuxBasket | Premium Luxury Gifting",
+    title: "The Lux Basket | Premium Luxury Gifting",
     description: "India's most premium gifting brand.",
   },
   robots: {

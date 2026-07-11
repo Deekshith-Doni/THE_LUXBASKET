@@ -11,12 +11,12 @@ import {
 import CorporateInquiryForm from "@/components/corporate/CorporateInquiryForm";
 
 export const metadata = {
-  title: "Corporate Gifting | The LuxBasket",
+  title: "Corporate Gifting | The Lux Basket",
   description:
     "Premium corporate gifting solutions. Bulk orders, custom branding, Diwali hampers, employee gifts. 500+ corporate clients across India.",
 };
 
-const process = [
+const workflowSteps = [
   {
     step: "01",
     title: "Submit Inquiry",
@@ -91,7 +91,7 @@ export default function CorporatePage() {
                 Get a Free Quote <ArrowRight size={16} />
               </a>
               <a
-                href={`https://wa.me/919999999999?text=Hi! I'm interested in corporate gifting for my company.`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'm interested in corporate gifting for my company.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline-gold"
@@ -167,9 +167,9 @@ export default function CorporatePage() {
             <div className="gold-divider mt-5" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {process.map((step, i) => (
+            {workflowSteps.map((step, i) => (
               <div key={step.step} className="relative">
-                {i < process.length - 1 && (
+                {i < workflowSteps.length - 1 && (
                   <div className="hidden lg:block absolute top-6 left-full w-full h-px bg-gold/20 z-0" />
                 )}
                 <div className="relative z-10">
@@ -308,7 +308,7 @@ export default function CorporatePage() {
           </a>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
           <a
-            href="https://wa.me/919999999999?text=Hi! Corporate gifting inquiry"
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! Corporate gifting inquiry`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-gold py-2.5 px-6 text-xs"

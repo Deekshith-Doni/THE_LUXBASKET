@@ -70,49 +70,75 @@ export default function ContactPage() {
                   {
                     icon: Phone,
                     label: "Phone / WhatsApp",
-                    value: "+91 88921 53586",
-                    href: "tel:+918892153586",
+                    isMultiLink: true,
+                    links: [
+                      {
+                        value: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610",
+                        href: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`,
+                      },
+                      {
+                        value: process.env.NEXT_PUBLIC_ALTERNATE_NUMBER || "+91 96067 12763",
+                        href: `https://wa.me/${process.env.NEXT_PUBLIC_ALTERNATE_NUMBER?.replace(/[^0-9]/g, "")}`,
+                      },
+                    ],
                   },
                   {
                     icon: Mail,
                     label: "Email",
-                    value: "bai237950@gmail.com",
-                    href: "mailto:bai237950@gmail.com",
+                    value: "hello@theluxbasket.com",
+                    href: "mailto:hello@theluxbasket.com",
                   },
                   {
                     icon: MapPin,
                     label: "Location",
                     value: "Bengaluru, Karnataka, India",
-                    href: "#",
+                    href: "https://maps.app.goo.gl/TM6fVZhkn2eYgiwp6",
                   },
-                ].map(({ icon: Icon, label, value, href }) => (
-                  <a
-                    key={label}
-                    href={href}
+                ].map((item, index) => (
+                  <div
+                    key={item.label}
                     className="flex items-start gap-4 group"
                   >
                     <div className="w-10 h-10 bg-emerald/5 border border-emerald/10 flex items-center justify-center flex-shrink-0 group-hover:bg-emerald group-hover:border-emerald transition-all">
-                      <Icon
+                      <item.icon
                         size={16}
                         className="text-emerald group-hover:text-ivory transition-colors"
                       />
                     </div>
                     <div>
                       <p className="text-xs font-body font-bold tracking-widest uppercase text-charcoal/40 mb-0.5">
-                        {label}
+                        {item.label}
                       </p>
-                      <p className="font-body text-sm text-charcoal group-hover:text-emerald transition-colors">
-                        {value}
-                      </p>
+                      {item.isMultiLink ? (
+                        <div className="flex flex-wrap gap-2 text-sm font-body text-charcoal">
+                          {item.links.map((link, i) => (
+                            <span key={i} className="flex gap-2">
+                              <a href={link.href} className="hover:text-emerald transition-colors">
+                                {link.value}
+                              </a>
+                              {i < item.links.length - 1 && <span className="text-charcoal/30">/</span>}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <a 
+                          href={item.href} 
+                          target={item.href.startsWith("http") ? "_blank" : undefined}
+                          rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className="font-body text-sm text-charcoal hover:text-emerald transition-colors block"
+                        >
+                          {item.value}
+                        </a>
+                      )}
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* WhatsApp CTA */}
             <a
-              href="https://wa.me/918892153586?text=Hi! I'd like to know more about The LuxBasket."
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'd like to know more about The Lux Basket.`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 bg-[#25D366]/10 border border-[#25D366]/30 text-[#128C7E] font-body text-sm font-medium hover:bg-[#25D366]/20 transition-colors"
@@ -243,12 +269,15 @@ export default function ContactPage() {
             )}
 
             {/* Map embed */}
-            <div className="mt-6 h-64 bg-beige-light border border-beige flex items-center justify-center">
-              <div className="text-center text-charcoal/40">
-                <MapPin size={32} className="mx-auto mb-2" />
-                <p className="font-body text-sm">Mumbai, Maharashtra, India</p>
-                <p className="text-xs mt-1">Embed Google Maps here</p>
-              </div>
+            <div className="mt-6 h-64 bg-beige-light border border-beige w-full">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameBorder="0" 
+                style={{ border: 0 }}
+                src="https://maps.google.com/maps?q=Begur,%20Bengaluru,%20Karnataka,%20India&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>

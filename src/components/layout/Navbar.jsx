@@ -67,11 +67,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Bar */}
-      <div className="bg-emerald text-ivory/80 text-xs py-2 text-center tracking-widest font-body">
-        ✦ Free shipping on orders above ₹1,999 &nbsp;|&nbsp; Bulk order
-        discounts available ✦
-      </div>
+
 
       {/* Main Navbar */}
       <nav
@@ -87,10 +83,10 @@ export default function Navbar() {
             {/* Logo */}
             <Link href="/" className="flex flex-col items-start group">
               <span className="font-heading text-2xl font-medium text-emerald tracking-wide leading-none group-hover:text-gold transition-colors duration-300">
-                The LuxBasket
+                The Lux Basket
               </span>
               <span className="text-[9px] tracking-[0.35em] uppercase text-gold font-body font-medium">
-                Premium Gifting
+                The Finer Way to Gifting
               </span>
             </Link>
 

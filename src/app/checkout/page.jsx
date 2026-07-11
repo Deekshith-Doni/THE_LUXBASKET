@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import Script from "next/script";
 
 const steps = ["Address", "Review", "Payment"];
 
@@ -19,6 +20,7 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
 
   const [address, setAddress] = useState({
     name: session?.user?.name || "",
@@ -50,7 +52,7 @@ export default function CheckoutPage() {
             customization: i.customization,
           })),
           shippingAddress: address,
-          paymentMethod: "cod",
+          paymentMethod,
           subtotal: total,
           shippingCharge: shipping,
           total: finalTotal,
@@ -58,17 +60,86 @@ export default function CheckoutPage() {
       });
 
       const data = await res.json();
-      if (res.ok) {
-        setOrderId(data.order.orderId);
+      if (!res.ok) {
+        toast.error(data.error || "Failed to place order");
+        setIsLoading(false);
+        return;
+      }
+
+      const mongoOrderId = data.order.orderId;
+
+      if (paymentMethod === "cod") {
+        setOrderId(mongoOrderId);
         setOrderPlaced(true);
         clearCart();
         toast.success("Order placed successfully!");
-      } else {
-        toast.error(data.error || "Failed to place order");
+        setIsLoading(false);
+      } else if (paymentMethod === "online") {
+        const rzpRes = await fetch("/api/razorpay/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: finalTotal, receipt: mongoOrderId }),
+        });
+        
+        const rzpData = await rzpRes.json();
+        if (!rzpRes.ok) {
+          toast.error("Failed to initialize payment gateway");
+          setIsLoading(false);
+          return;
+        }
+
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: rzpData.order.amount,
+          currency: rzpData.order.currency,
+          name: "The Lux Basket",
+          description: "Luxury Gifting",
+          order_id: rzpData.order.id,
+          handler: async function (response) {
+            try {
+              const verifyRes = await fetch("/api/razorpay/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  mongo_order_id: mongoOrderId,
+                }),
+              });
+              
+              const verifyData = await verifyRes.json();
+              if (verifyRes.ok) {
+                setOrderId(mongoOrderId);
+                setOrderPlaced(true);
+                clearCart();
+                toast.success("Payment successful!");
+              } else {
+                toast.error(verifyData.error || "Payment verification failed");
+              }
+            } catch (error) {
+              toast.error("Error verifying payment");
+            }
+          },
+          prefill: {
+            name: address.name,
+            email: session?.user?.email || "",
+            contact: address.phone,
+          },
+          theme: {
+            color: "#0f3b33",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+          toast.error("Payment failed. Please try again.");
+        });
+        rzp.open();
+        setIsLoading(false);
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -116,7 +187,9 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+      <div className="min-h-screen bg-ivory">
       <div className="bg-white border-b border-beige py-4">
         <div className="container-luxury">
           <h1 className="font-heading text-3xl text-charcoal">Checkout</h1>
@@ -354,10 +427,13 @@ export default function CheckoutPage() {
                 </h2>
 
                 <div className="space-y-3 mb-8">
-                  <label className="flex items-center gap-3 p-4 border-2 border-emerald bg-emerald/5 cursor-pointer">
+                  <label className={`flex items-center gap-3 p-4 border-2 cursor-pointer transition-colors ${paymentMethod === 'cod' ? 'border-emerald bg-emerald/5' : 'border-beige hover:border-emerald/50'}`}>
                     <input
                       type="radio"
-                      defaultChecked
+                      name="paymentMethod"
+                      value="cod"
+                      checked={paymentMethod === 'cod'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
                       className="accent-emerald"
                     />
                     <div>
@@ -369,14 +445,21 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                   </label>
-                  <label className="flex items-center gap-3 p-4 border border-beige cursor-not-allowed opacity-50">
-                    <input type="radio" disabled className="accent-emerald" />
+                  <label className={`flex items-center gap-3 p-4 border-2 cursor-pointer transition-colors ${paymentMethod === 'online' ? 'border-emerald bg-emerald/5' : 'border-beige hover:border-emerald/50'}`}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="online"
+                      checked={paymentMethod === 'online'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="accent-emerald"
+                    />
                     <div>
                       <p className="font-body text-sm font-semibold text-charcoal">
                         Online Payment
                       </p>
                       <p className="text-xs font-body text-charcoal/50">
-                        UPI / Cards / Netbanking — Coming Soon
+                        UPI / Cards / Netbanking
                       </p>
                     </div>
                   </label>
@@ -438,5 +521,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

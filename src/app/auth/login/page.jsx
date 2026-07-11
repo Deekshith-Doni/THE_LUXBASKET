@@ -56,10 +56,10 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col justify-center px-16">
           <Link href="/" className="flex flex-col items-start mb-12">
             <span className="font-heading text-4xl font-medium text-ivory">
-              The LuxBasket
+              The Lux Basket
             </span>
             <span className="text-xs tracking-[0.35em] uppercase text-gold font-body mt-1">
-              Premium Gifting
+              The Finer Way to Gifting
             </span>
           </Link>
           <h2 className="font-heading text-4xl font-light text-ivory leading-tight mb-4">
@@ -97,7 +97,7 @@ export default function LoginPage() {
           <div className="lg:hidden text-center mb-8">
             <Link href="/">
               <span className="font-heading text-3xl font-medium text-emerald">
-                The LuxBasket
+                The Lux Basket
               </span>
             </Link>
           </div>

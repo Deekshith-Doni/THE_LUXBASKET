@@ -64,8 +64,8 @@ export default function CorporateInquiryForm() {
         </p>
         <div className="mt-6 text-sm font-body text-charcoal/50">
           For urgent requirements, WhatsApp us directly:{" "}
-          <a href="https://wa.me/919999999999" className="text-gold underline">
-            +91 99999 99999
+          <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`} className="text-gold underline">
+            {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610"}
           </a>
         </div>
       </div>

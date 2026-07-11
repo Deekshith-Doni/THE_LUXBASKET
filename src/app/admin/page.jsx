@@ -125,7 +125,7 @@ export default function AdminDashboard() {
       <div>
         <h1 className="font-heading text-3xl text-charcoal">Dashboard</h1>
         <p className="font-body text-sm text-charcoal/50 mt-1">
-          Welcome back! Here&apos;s what&apos;s happening with The LuxBasket.
+          Welcome back! Here&apos;s what&apos;s happening with The Lux Basket.
         </p>
       </div>
 

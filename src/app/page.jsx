@@ -8,7 +8,7 @@ import BestSellers from "@/components/home/BestSellers";
 import MarqueeBanner from "@/components/home/MarqueeBanner";
 
 export const metadata = {
-  title: "The LuxBasket | Premium Luxury Gifting in India",
+  title: "The Lux Basket | Premium Luxury Gifting in India",
   description:
     "Shop India's finest luxury gift hampers. Corporate gifting, wedding return gifts, festive hampers & customized gifts. Premium quality, elegant packaging, pan-India delivery.",
 };

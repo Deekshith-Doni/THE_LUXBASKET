@@ -9,7 +9,7 @@ const testimonials = [
     role: "HR Director",
     company: "TechCorp India",
     content:
-      "The LuxBasket transformed our Diwali gifting completely. Every employee was absolutely delighted — the quality and presentation exceeded all expectations. Will definitely order again!",
+      "The Lux Basket transformed our Diwali gifting completely. Every employee was absolutely delighted — the quality and presentation exceeded all expectations. Will definitely order again!",
     rating: 5,
   },
   {
@@ -27,7 +27,7 @@ const testimonials = [
     role: "Wedding Planner",
     company: "Dream Weddings",
     content:
-      "My clients loved the wedding return gifts from The LuxBasket. The customization options are incredible and every guest mentioned how beautiful the packaging was.",
+      "My clients loved the wedding return gifts from The Lux Basket. The customization options are incredible and every guest mentioned how beautiful the packaging was.",
     rating: 5,
   },
   {
@@ -36,7 +36,7 @@ const testimonials = [
     role: "CEO",
     company: "Nair & Sons",
     content:
-      "We've been using The LuxBasket for all our corporate gifting needs for 2 years. The consistency in quality and the luxury feel of every hamper keeps us coming back.",
+      "We've been using The Lux Basket for all our corporate gifting needs for 2 years. The consistency in quality and the luxury feel of every hamper keeps us coming back.",
     rating: 5,
   },
 ];

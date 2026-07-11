@@ -124,7 +124,7 @@ export default function FAQSection() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href={`https://wa.me/918892153586?text=Hi! I have a question about The LuxBasket.`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I have a question about The Lux Basket.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"

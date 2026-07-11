@@ -1,9 +1,9 @@
 import { Award, Heart, Leaf, Star } from "lucide-react";
 
 export const metadata = {
-  title: "About Us | The LuxBasket",
+  title: "About Us | The Lux Basket",
   description:
-    "Discover the story behind The LuxBasket — India's premium luxury gifting brand. Our mission, values, and commitment to excellence.",
+    "Discover the story behind The Lux Basket — India's premium luxury gifting brand. Our mission, values, and commitment to excellence.",
 };
 
 const values = [
@@ -69,12 +69,12 @@ export default function AboutPage() {
             <div>
               <span className="section-tag">Founder&apos;s Letter</span>
               <h2 className="section-title mt-3">
-                The Vision Behind The LuxBasket
+                The Vision Behind The Lux Basket
               </h2>
               <div className="w-16 h-px bg-gold my-6" />
               <div className="space-y-4 font-body text-charcoal/70 leading-relaxed">
                 <p>
-                  The LuxBasket was born from a simple frustration: India
+                  The Lux Basket was born from a simple frustration: India
                   deserved a gifting brand that truly understood luxury. Not
                   just expensive — but thoughtful, elegant, and memorable.
                 </p>
@@ -93,7 +93,7 @@ export default function AboutPage() {
               </div>
               <div className="mt-8">
                 <p className="font-heading text-2xl text-charcoal italic">
-                  — The LuxBasket Team
+                  — The Lux Basket Team
                 </p>
                 <p className="font-body text-sm text-charcoal/50 mt-1">
                   Mumbai, India

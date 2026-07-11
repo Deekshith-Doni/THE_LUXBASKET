@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 import { getWhatsAppUrl } from "@/lib/utils";
 
 export default function WhatsAppButton() {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+919999999999";
+  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+919686189610";
   const message =
-    "Hi! I'm interested in ordering from The LuxBasket. Can you help me?";
+    "Hi! I'm interested in ordering from The Lux Basket. Can you help me?";
   const url = getWhatsAppUrl(phone, message);
 
   return (

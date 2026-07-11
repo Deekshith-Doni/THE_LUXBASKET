@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import {
   Instagram,
   Facebook,
@@ -34,6 +36,33 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return toast.error("Please enter your email address");
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to subscribe");
+
+      toast.success("Thank you for subscribing!");
+      setEmail("");
+    } catch (error) {
+      toast.error(error.message || "Failed to subscribe");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <footer className="bg-emerald-dark text-ivory/80">
       {/* Newsletter Strip */}
@@ -49,19 +78,24 @@ export default function Footer() {
           </div>
           <form
             className="flex gap-0 w-full md:w-auto"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubscribe}
           >
             <input
               type="email"
               placeholder="Your email address"
-              className="px-5 py-3.5 bg-white/10 border border-gold/30 text-ivory placeholder:text-ivory/40 text-sm font-body flex-1 md:w-72 focus:outline-none focus:border-gold"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+              className="px-5 py-3.5 bg-white/10 border border-gold/30 text-ivory placeholder:text-ivory/40 text-sm font-body flex-1 md:w-72 focus:outline-none focus:border-gold disabled:opacity-50"
             />
 
             <button
               type="submit"
-              className="px-6 py-3.5 bg-gold text-emerald-dark text-xs font-body font-bold tracking-widest uppercase hover:bg-gold-light transition-colors duration-200"
+              disabled={loading}
+              className="px-6 py-3.5 bg-gold text-emerald-dark text-xs font-body font-bold tracking-widest uppercase hover:bg-gold-light transition-colors duration-200 disabled:opacity-50"
             >
-              Subscribe
+              {loading ? "Subscribing..." : "Subscribe"}
             </button>
           </form>
         </div>
@@ -74,10 +108,10 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex flex-col items-start mb-5">
               <span className="font-heading text-3xl font-medium text-ivory tracking-wide">
-                The LuxBasket
+                The Lux Basket
               </span>
               <span className="text-[9px] tracking-[0.35em] uppercase text-gold font-body">
-                Premium Gifting
+                The Finer Way to Gifting
               </span>
             </Link>
             <p className="text-sm font-body text-ivory/60 leading-relaxed max-w-xs">
@@ -88,13 +122,24 @@ export default function Footer() {
 
             {/* Contact Info */}
             <div className="mt-6 space-y-2.5">
-              <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`}
-                className="flex items-center gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
-              >
+              <div className="flex items-center gap-3 text-sm font-body text-ivory/60">
                 <Phone size={14} className="text-gold flex-shrink-0" />
-                {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 99999 99999"}
-              </a>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`}
+                    className="hover:text-gold transition-colors"
+                  >
+                    {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610"}
+                  </a>
+                  <span className="text-ivory/30">/</span>
+                  <a
+                    href={`https://wa.me/${process.env.NEXT_PUBLIC_ALTERNATE_NUMBER?.replace(/[^0-9]/g, "")}`}
+                    className="hover:text-gold transition-colors"
+                  >
+                    {process.env.NEXT_PUBLIC_ALTERNATE_NUMBER || "+91 96067 12763"}
+                  </a>
+                </div>
+              </div>
               <a
                 href="mailto:hello@theluxbasket.com"
                 className="flex items-center gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
@@ -104,7 +149,7 @@ export default function Footer() {
               </a>
               <p className="flex items-start gap-3 text-sm font-body text-ivory/60">
                 <MapPin size={14} className="text-gold flex-shrink-0 mt-0.5" />
-                Mumbai, Maharashtra, India
+                Begur, Bengaluru, Karnataka, India
               </p>
             </div>
 
@@ -188,7 +233,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-14 pt-8 border-t border-ivory/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs font-body text-ivory/40 text-center">
-            © {new Date().getFullYear()} The LuxBasket. All rights reserved.
+            © {new Date().getFullYear()} The Lux Basket. All rights reserved.
           </p>
           <div className="flex items-center gap-2">
             {["VISA", "Mastercard", "UPI", "COD"].map((method) => (

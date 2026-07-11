@@ -53,6 +53,8 @@ const OrderSchema = new Schema(
     notes: { type: String },
     trackingNumber: { type: String },
     estimatedDelivery: { type: Date },
+    razorpayOrderId: { type: String },
+    razorpayPaymentId: { type: String },
   },
   { timestamps: true },
 );

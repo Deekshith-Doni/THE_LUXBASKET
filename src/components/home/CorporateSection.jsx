@@ -131,7 +131,7 @@ export default function CorporateSection() {
                 <ArrowRight size={16} />
               </Link>
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "") || "919999999999"}?text=Hi! I'm interested in corporate gifting.`}
+                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'm interested in corporate gifting.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline-gold"

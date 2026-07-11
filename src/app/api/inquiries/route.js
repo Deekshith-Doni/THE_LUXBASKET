@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Inquiry from "@/models/Inquiry";
 import { z } from "zod";
+import { sendAdminNotification } from "@/lib/email";
 
 const inquirySchema = z.object({
   name: z.string().min(2),
@@ -29,6 +30,9 @@ export async function POST(req) {
 
     await connectDB();
     const inquiry = await Inquiry.create(validation.data);
+
+    // Send email notification (non-blocking)
+    sendAdminNotification(inquiry).catch(console.error);
 
     return NextResponse.json(
       {

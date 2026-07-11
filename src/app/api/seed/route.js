@@ -253,7 +253,7 @@ export async function GET() {
     await User.deleteMany({ email: "admin@theluxbasket.com" });
     const hashedPassword = await bcrypt.hash("admin12345", 10);
     await User.create({
-      name: "LuxBasket Admin",
+      name: "Lux Basket Admin",
       email: "admin@theluxbasket.com",
       password: hashedPassword,
       role: "admin",

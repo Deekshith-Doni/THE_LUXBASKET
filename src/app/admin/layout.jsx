@@ -11,6 +11,7 @@ import {
   Image,
   LogOut,
   ChevronRight,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/admin/categories", icon: Tag, label: "Categories" },
   { href: "/admin/inquiries", icon: MessageSquare, label: "Inquiries" },
   { href: "/admin/banners", icon: Image, label: "Banners" },
+  { href: "/admin/subscribers", icon: Mail, label: "Subscribers" },
 ];
 
 export default function AdminLayout({ children }) {
@@ -36,7 +38,7 @@ export default function AdminLayout({ children }) {
         <div className="px-6 py-6 border-b border-ivory/10">
           <Link href="/admin">
             <span className="font-heading text-2xl font-medium text-ivory">
-              The LuxBasket
+              The Lux Basket
             </span>
             <span className="block text-[10px] tracking-[0.3em] uppercase text-gold font-body mt-0.5">
               Admin Panel

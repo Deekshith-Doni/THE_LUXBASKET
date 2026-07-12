@@ -141,22 +141,27 @@ export default function Footer() {
                 </div>
               </div>
               <a
-                href="mailto:hello@theluxbasket.com"
+                href="mailto:info@theluxbasketgift.com"
                 className="flex items-center gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
               >
                 <Mail size={14} className="text-gold flex-shrink-0" />
-                hello@theluxbasket.com
+                info@theluxbasketgift.com
               </a>
-              <p className="flex items-start gap-3 text-sm font-body text-ivory/60">
+              <a 
+                href="https://share.google/GtPJZ4jH28vCTJ8bp" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-start gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
+              >
                 <MapPin size={14} className="text-gold flex-shrink-0 mt-0.5" />
-                Begur, Bengaluru, Karnataka, India
-              </p>
+                #101,185, AECS Layout, C Block,8th Cross, Singasandra, Bengaluru - 560068
+              </a>
             </div>
 
             {/* Socials */}
             <div className="flex items-center gap-4 mt-6">
               {[
-                { href: "#", icon: Instagram, label: "Instagram" },
+                { href: "https://www.instagram.com/theluxbasketgift/?utm_source=ig_web_button_share_sheet", icon: Instagram, label: "Instagram" },
                 { href: "#", icon: Facebook, label: "Facebook" },
                 { href: "#", icon: Twitter, label: "Twitter" },
               ].map(({ href, icon: Icon, label }) => (

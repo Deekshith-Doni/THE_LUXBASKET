@@ -85,14 +85,14 @@ export default function ContactPage() {
                   {
                     icon: Mail,
                     label: "Email",
-                    value: "hello@theluxbasket.com",
-                    href: "mailto:hello@theluxbasket.com",
+                    value: "info@theluxbasketgift.com",
+                    href: "mailto:info@theluxbasketgift.com",
                   },
                   {
                     icon: MapPin,
                     label: "Location",
-                    value: "Bengaluru, Karnataka, India",
-                    href: "https://maps.app.goo.gl/TM6fVZhkn2eYgiwp6",
+                    value: "#101,185, AECS Layout, C Block,8th Cross, Singasandra, Bengaluru - 560068",
+                    href: "https://share.google/GtPJZ4jH28vCTJ8bp",
                   },
                 ].map((item, index) => (
                   <div
@@ -154,12 +154,12 @@ export default function ContactPage() {
               </h3>
               <div className="space-y-2 text-sm font-body text-charcoal/70">
                 <div className="flex justify-between">
-                  <span>Monday – Saturday</span>
-                  <span className="font-medium">9 AM – 8 PM</span>
+                  <span>Monday – Friday</span>
+                  <span className="font-medium">10 AM – 5 PM</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Sunday</span>
-                  <span className="font-medium">10 AM – 5 PM</span>
+                  <span>Saturday</span>
+                  <span className="font-medium">10 AM – 3 PM</span>
                 </div>
               </div>
             </div>

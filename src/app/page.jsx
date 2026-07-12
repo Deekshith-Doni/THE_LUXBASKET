@@ -1,7 +1,7 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedCollections from "@/components/home/FeaturedCollections";
 import CorporateSection from "@/components/home/CorporateSection";
-import Testimonials from "@/components/home/Testimonials";
+
 import FAQSection from "@/components/home/FAQSection";
 import WeddingSection from "@/components/home/WeddingSection";
 import BestSellers from "@/components/home/BestSellers";
@@ -22,7 +22,7 @@ export default function HomePage() {
       <BestSellers />
       <CorporateSection />
       <WeddingSection />
-      <Testimonials />
+
       <FAQSection />
     </>
   );

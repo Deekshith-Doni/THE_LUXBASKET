@@ -11,14 +11,7 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
 
-const categories = [
-  { label: "All", value: "" },
-  { label: "Luxury Hampers", value: "luxury-hampers" },
-  { label: "Corporate Gifts", value: "corporate" },
-  { label: "Wedding Gifts", value: "wedding" },
-  { label: "Festive Hampers", value: "festive" },
-  { label: "Customized Gifts", value: "customized" },
-];
+
 
 const sortOptions = [
   { label: "Newest First", value: "createdAt-desc" },
@@ -40,17 +33,33 @@ function CollectionsContent() {
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([{ label: "All", value: "" }]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetch("/api/products?limit=100")
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data.products || []);
+    
+    // Fetch products
+    const fetchProds = fetch("/api/products?limit=100").then(res => res.json());
+    // Fetch categories
+    const fetchCats = fetch("/api/categories").then(res => res.json());
+
+    Promise.all([fetchProds, fetchCats])
+      .then(([productsData, categoriesData]) => {
+        setProducts(productsData.products || []);
+        if (categoriesData.categories) {
+          const formatted = categoriesData.categories.map((c) => ({
+            label: c.name,
+            value: c.slug,
+          }));
+          setCategories([{ label: "All", value: "" }, ...formatted]);
+        }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
   }, []);
 
   const filteredProducts = products.filter((p) => {

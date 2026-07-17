@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import {
@@ -19,13 +19,7 @@ const footerLinks = {
     { href: "/contact", label: "Contact Us" },
     { href: "/collections", label: "Collections" },
   ],
-  categories: [
-    { href: "/collections?category=luxury-hampers", label: "Luxury Hampers" },
-    { href: "/collections?category=corporate", label: "Corporate Gifts" },
-    { href: "/collections?category=wedding", label: "Wedding Gifts" },
-    { href: "/collections?category=festive", label: "Festive Hampers" },
-    { href: "/collections?category=customized", label: "Customized Gifts" },
-  ],
+  categories: [],
   support: [
     { href: "/faq", label: "FAQs" },
     { href: "/shipping", label: "Shipping Policy" },
@@ -38,6 +32,23 @@ const footerLinks = {
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dynamicCategories, setDynamicCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.categories) {
+          setDynamicCategories(
+            data.categories.map((c) => ({
+              href: `/collections?category=${c.slug}`,
+              label: c.name,
+            }))
+          );
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -203,16 +214,20 @@ export default function Footer() {
               Collections
             </h4>
             <ul className="space-y-3">
-              {footerLinks.categories.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm font-body text-ivory/60 hover:text-gold transition-colors duration-200"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {dynamicCategories.length > 0 ? (
+                dynamicCategories.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm font-body text-ivory/60 hover:text-gold transition-colors duration-200"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li className="text-sm font-body text-ivory/60">Loading...</li>
+              )}
             </ul>
           </div>
 

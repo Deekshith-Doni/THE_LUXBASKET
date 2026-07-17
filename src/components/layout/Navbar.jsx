@@ -16,18 +16,12 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
+const initialNavLinks = [
   { href: "/", label: "Home" },
   {
     href: "/collections",
     label: "Collections",
-    children: [
-      { href: "/collections?category=luxury-hampers", label: "Luxury Hampers" },
-      { href: "/collections?category=corporate", label: "Corporate Gifts" },
-      { href: "/collections?category=wedding", label: "Wedding Gifts" },
-      { href: "/collections?category=festive", label: "Festive Hampers" },
-      { href: "/collections?category=customized", label: "Customized Gifts" },
-    ],
+    children: [],
   },
   { href: "/corporate", label: "Corporate" },
   { href: "/about", label: "About" },
@@ -41,6 +35,7 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false);
+  const [navLinks, setNavLinks] = useState(initialNavLinks);
   const { data: session } = useSession();
   const { itemCount, openCart } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
@@ -50,6 +45,27 @@ export default function Navbar() {
     setIsMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
+    
+    // Fetch categories for dropdown
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.categories) {
+          const catLinks = data.categories.map((c) => ({
+            href: `/collections?category=${c.slug}`,
+            label: c.name,
+          }));
+          setNavLinks((prev) =>
+            prev.map((link) =>
+              link.label === "Collections"
+                ? { ...link, children: catLinks }
+                : link
+            )
+          );
+        }
+      })
+      .catch(console.error);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

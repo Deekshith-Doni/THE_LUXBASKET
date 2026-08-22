@@ -185,16 +185,16 @@ h1, h2, h3, h4, h5, h6 {
 
   /* --- Badge --- */
   .badge-gold {
-    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-semibold tracking-wide
-           bg-gold/10 text-gold-dark border border-gold/20 rounded-full;
+    @apply inline-flex items-center justify-center px-3 py-1 text-[10px] uppercase font-bold tracking-widest
+           bg-white/90 text-gold-dark shadow-sm backdrop-blur-sm rounded-sm;
   }
   .badge-emerald {
-    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-semibold tracking-wide
-           bg-emerald/10 text-emerald border border-emerald/20 rounded-full;
+    @apply inline-flex items-center justify-center px-3 py-1 text-[10px] uppercase font-bold tracking-widest
+           bg-white/90 text-emerald shadow-sm backdrop-blur-sm rounded-sm;
   }
   .badge-sale {
-    @apply inline-flex items-center px-2.5 py-0.5 text-xs font-bold tracking-wide
-           bg-red-500 text-white rounded-full;
+    @apply inline-flex items-center justify-center px-3 py-1 text-[10px] uppercase font-bold tracking-widest
+           bg-red-500 text-white shadow-sm rounded-sm;
   }
 
   /* --- Container --- */

@@ -75,7 +75,7 @@ export default function ProductCard({ product, className }) {
         </Link>
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 pointer-events-none">
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-2 pointer-events-none z-10">
           {product.isNewArrival && (
             <span className="badge-emerald text-xs">New</span>
           )}

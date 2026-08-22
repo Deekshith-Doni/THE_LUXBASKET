@@ -23,7 +23,7 @@ export default function AdminProductsPage() {
     stock: "10",
     category: "",
     shortDescription: "",
-    description: "Detailed product description goes here...",
+    description: "",
     tags: "",
     images: [],
     isActive: true,
@@ -73,7 +73,7 @@ export default function AdminProductsPage() {
       stock: product.stock ? product.stock.toString() : "0",
       category: typeof product.category === "object" ? product.category._id : product.category || "",
       shortDescription: product.shortDescription || "",
-      description: product.description || "Detailed product description goes here...",
+      description: product.description || "",
       tags: (product.tags || []).join(", "),
       images: product.images || [],
       isActive: product.isActive !== undefined ? product.isActive : true,
@@ -95,7 +95,7 @@ export default function AdminProductsPage() {
       stock: "10",
       category: "",
       shortDescription: "",
-      description: "Detailed product description goes here...",
+      description: "",
       tags: "",
       images: [],
       isActive: true,
@@ -435,6 +435,11 @@ export default function AdminProductsPage() {
                 <div className="col-span-2">
                   <label className="luxury-label">Short Description</label>
                   <textarea required name="shortDescription" value={formData.shortDescription} onChange={handleInputChange} maxLength={200} className="luxury-input h-20 resize-none text-sm" placeholder="A brief one-line summary for the catalog..." />
+                </div>
+                
+                <div className="col-span-2">
+                  <label className="luxury-label">Detailed Description</label>
+                  <textarea name="description" value={formData.description} onChange={handleInputChange} className="luxury-input h-32 resize-y text-sm" placeholder="Full details for the 'About this Gift' section on the product page..." />
                 </div>
                 
                 <div className="col-span-2">

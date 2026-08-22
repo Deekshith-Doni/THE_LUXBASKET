@@ -1,48 +1,44 @@
 "use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const collections = [
-  {
-    id: 1,
-    title: "Luxury Hampers",
-    subtitle: "Curated opulence",
-    href: "/collections?category=luxury-hampers",
-    image:
-      "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80",
-    tag: "Most Popular",
-  },
-  {
-    id: 2,
-    title: "Corporate Gifts",
-    subtitle: "Impress every client",
-    href: "/collections?category=corporate",
-    image:
-      "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=600&q=80",
-    tag: "Bulk Orders",
-  },
-  {
-    id: 3,
-    title: "Wedding Gifts",
-    subtitle: "Return with elegance",
-    href: "/collections?category=wedding",
-    image:
-      "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=600&q=80",
-    tag: "Customizable",
-  },
-  {
-    id: 4,
-    title: "Festive Hampers",
-    subtitle: "Celebrate every occasion",
-    href: "/collections?category=festive",
-    image:
-      "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80",
-    tag: "Seasonal",
-  },
-];
-
 export default function FeaturedCollections() {
+  const [collections, setCollections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.categories) {
+          const defaultImages = [
+            "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=600&q=80",
+            "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?w=600&q=80",
+            "https://images.unsplash.com/photo-1510076857177-7470076d4098?w=600&q=80",
+            "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&q=80",
+          ];
+          const defaultTags = ["Featured", "Popular", "New", "Trending"];
+          
+          const mapped = data.categories.slice(0, 4).map((c, i) => ({
+            id: c._id || i,
+            title: c.name,
+            subtitle: c.description || "Discover more",
+            href: `/collections?category=${c.slug}`,
+            image: c.image || defaultImages[i % defaultImages.length],
+            tag: defaultTags[i % defaultTags.length],
+          }));
+          setCollections(mapped);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <section className="section-padding bg-ivory">
       <div className="container-luxury">

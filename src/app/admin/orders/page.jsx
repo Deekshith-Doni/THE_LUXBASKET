@@ -151,7 +151,10 @@ export default function AdminOrdersPage() {
                       </p>
                     </td>
                     <td className="px-4 py-4 text-sm font-body text-charcoal/70">
-                      {order.items?.length} items
+                      <div>{order.items?.length} items</div>
+                      <div className="text-xs text-charcoal/50 mt-1 max-w-[200px] truncate">
+                        {order.items?.map(i => i.product?.name || i.name).filter(Boolean).join(", ")}
+                      </div>
                     </td>
                     <td className="px-4 py-4 font-heading text-base text-emerald">
                       {formatPrice(order.total)}

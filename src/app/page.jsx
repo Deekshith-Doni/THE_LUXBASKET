@@ -3,7 +3,7 @@ import FeaturedCollections from "@/components/home/FeaturedCollections";
 import CorporateSection from "@/components/home/CorporateSection";
 
 import FAQSection from "@/components/home/FAQSection";
-import WeddingSection from "@/components/home/WeddingSection";
+
 import BestSellers from "@/components/home/BestSellers";
 import MarqueeBanner from "@/components/home/MarqueeBanner";
 
@@ -21,7 +21,7 @@ export default function HomePage() {
       <FeaturedCollections />
       <BestSellers />
       <CorporateSection />
-      <WeddingSection />
+
 
       <FAQSection />
     </>

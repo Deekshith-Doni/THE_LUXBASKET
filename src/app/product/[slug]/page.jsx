@@ -184,7 +184,7 @@ export default function ProductDetailPage() {
   };
 
   const whatsappUrl = getWhatsAppUrl(
-    "+918892153586",
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+919686189610",
     `Hi! I'm interested in ordering: ${product.name} (${formatPrice(product.discountPrice || product.price)}). Can you help me?`,
   );
 

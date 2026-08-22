@@ -82,38 +82,45 @@ export default function FeaturedCollections() {
             >
               <Link
                 href={col.href}
-                className="group block relative overflow-hidden aspect-[3/4] bg-beige-light"
+                className="group block relative overflow-hidden aspect-square bg-beige-light rounded-sm shadow-sm"
               >
                 {/* Image */}
                 <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110"
                   style={{ backgroundImage: `url(${col.image})` }}
                 />
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-dark/90 via-emerald/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700" />
 
                 {/* Tag */}
-                <div className="absolute top-4 left-4">
-                  <span className="badge-gold text-xs">{col.tag}</span>
+                <div className="absolute top-5 left-5">
+                  <span className="bg-white/95 text-charcoal px-3 py-1.5 text-[10px] font-body font-bold tracking-widest uppercase rounded-sm shadow-md">
+                    {col.tag}
+                  </span>
                 </div>
 
                 {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p className="text-xs font-body text-gold tracking-widest uppercase mb-1">
-                    {col.subtitle}
-                  </p>
-                  <h3 className="font-heading text-2xl text-ivory font-medium leading-tight">
-                    {col.title}
-                  </h3>
-                  <div className="flex items-center gap-2 mt-3 text-ivory/70 group-hover:text-gold transition-colors duration-300">
-                    <span className="text-xs font-body tracking-widest uppercase">
-                      Explore
-                    </span>
-                    <ArrowRight
-                      size={14}
-                      className="transition-transform group-hover:translate-x-1"
-                    />
+                <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
+                  <div className="transform translate-y-12 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+                    <h3 className="font-heading text-2xl md:text-3xl text-white font-medium leading-tight mb-2 drop-shadow-md">
+                      {col.title}
+                    </h3>
+                    
+                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out max-h-0 group-hover:max-h-32 overflow-hidden">
+                      <p className="text-sm font-body text-white/90 mb-4 line-clamp-2 mt-2">
+                        {col.subtitle}
+                      </p>
+                      <div className="flex items-center gap-2 text-gold">
+                        <span className="text-xs font-body tracking-widest uppercase font-bold">
+                          Show More
+                        </span>
+                        <ArrowRight
+                          size={14}
+                          className="transition-transform group-hover:translate-x-2"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Link>

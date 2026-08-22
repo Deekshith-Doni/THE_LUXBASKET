@@ -94,16 +94,16 @@ export default function FeaturedCollections() {
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-700" />
 
                 {/* Tag */}
-                <div className="absolute top-5 left-5">
-                  <span className="bg-white/95 text-charcoal px-3 py-1.5 text-[10px] font-body font-bold tracking-widest uppercase rounded-sm shadow-md">
+                <div className="absolute top-0 left-0">
+                  <span className="inline-block bg-white/95 text-charcoal px-4 py-1.5 text-[10px] font-body font-bold tracking-widest uppercase rounded-br-lg shadow-sm">
                     {col.tag}
                   </span>
                 </div>
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end">
-                  <div className="transform translate-y-12 group-hover:translate-y-0 transition-transform duration-700 ease-out">
-                    <h3 className="font-heading text-2xl md:text-3xl text-white font-medium leading-tight mb-2 drop-shadow-md">
+                  <div className="transition-transform duration-700 ease-out">
+                    <h3 className="font-heading text-2xl md:text-3xl text-white font-medium leading-tight drop-shadow-md">
                       {col.title}
                     </h3>
                     

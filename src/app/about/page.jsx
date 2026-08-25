@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Award, Heart, Leaf, Star } from "lucide-react";
 
 export const metadata = {
@@ -57,14 +58,17 @@ export default function AboutPage() {
       <section className="section-padding bg-white">
         <div className="container-luxury">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <div
-                className="aspect-square bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80')",
-                }}
-              />
+            <div className="flex items-center justify-center">
+              <div className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden border border-gold/20 shadow-2xl">
+                <Image
+                  src="/icon.png"
+                  alt="The Lux Basket Logo"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 90vw, 450px"
+                  priority
+                />
+              </div>
             </div>
             <div>
               <span className="section-tag">Founder&apos;s Letter</span>
@@ -136,8 +140,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-emerald-dark py-20">
+      {/* Stats — hidden temporarily */}
+      {/* <section className="bg-emerald-dark py-20">
         <div className="container-luxury">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
             {[
@@ -157,7 +161,7 @@ export default function AboutPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

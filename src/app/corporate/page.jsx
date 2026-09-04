@@ -292,7 +292,15 @@ export default function CorporatePage() {
             className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
           >
             <Phone size={18} className="text-gold" />
-            <span className="font-body text-sm">+91 96861 89610 / +91 96067 12763</span>
+            <span className="font-body text-sm">+91 96861 89610</span>
+          </a>
+          <span className="hidden md:block w-px h-6 bg-ivory/20" />
+          <a
+            href="tel:+919606712763"
+            className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
+          >
+            <Phone size={18} className="text-gold" />
+            <span className="font-body text-sm">+91 96067 12763</span>
           </a>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
           <a

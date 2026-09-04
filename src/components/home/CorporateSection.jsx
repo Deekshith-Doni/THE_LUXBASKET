@@ -141,7 +141,8 @@ export default function CorporateSection() {
             </motion.div>
           </div>
 
-          {/* Right — Client logos + visual */}
+          {/* Right — Client logos + stats — hidden temporarily */}
+          {/*
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -158,30 +159,25 @@ export default function CorporateSection() {
                     key={client}
                     className="h-12 border border-ivory/10 flex items-center justify-center hover:border-gold/30 transition-colors duration-300"
                   >
-                    <span className="text-xs font-body font-bold text-ivory/40 tracking-widest">
-                      {client}
-                    </span>
+                    <span className="text-xs font-body font-bold text-ivory/40 tracking-widest">{client}</span>
                   </div>
                 ))}
               </div>
-
-              {/* Stat cards */}
               <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-ivory/10">
                 {[
-                  { v: "₹2Cr+", l: "Orders Delivered" },
+                  { v: "\u20B92Cr+", l: "Orders Delivered" },
                   { v: "500+", l: "Corporate Clients" },
                   { v: "100%", l: "On-Time Delivery" },
                 ].map((s) => (
                   <div key={s.l} className="text-center">
                     <p className="font-heading text-2xl text-gold">{s.v}</p>
-                    <p className="text-xs font-body text-ivory/50 mt-1">
-                      {s.l}
-                    </p>
+                    <p className="text-xs font-body text-ivory/50 mt-1">{s.l}</p>
                   </div>
                 ))}
               </div>
             </div>
           </motion.div>
+          */}
         </div>
       </div>
     </section>

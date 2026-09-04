@@ -258,7 +258,8 @@ export default function HeroSection() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Stats (static across slide changes) */}
+          {/* Stats — hidden temporarily */}
+          {/*
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -269,18 +270,15 @@ export default function HeroSection() {
               { value: "10,000+", label: "Happy Clients" },
               { value: "500+", label: "Gift Options" },
               { value: "50+", label: "Corporate Partners" },
-              { value: "4.9★", label: "Average Rating" },
+              { value: "4.9\u2605", label: "Average Rating" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
-                <p className="font-heading text-2xl md:text-3xl font-medium text-gold">
-                  {stat.value}
-                </p>
-                <p className="text-xs font-body text-ivory/50 tracking-wide mt-0.5">
-                  {stat.label}
-                </p>
+                <p className="font-heading text-2xl md:text-3xl font-medium text-gold">{stat.value}</p>
+                <p className="text-xs font-body text-ivory/50 tracking-wide mt-0.5">{stat.label}</p>
               </div>
             ))}
           </motion.div>
+          */}
         </div>
       </div>
 

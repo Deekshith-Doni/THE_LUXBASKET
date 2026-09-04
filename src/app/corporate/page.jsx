@@ -103,28 +103,26 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats bar — hidden temporarily */}
+      {/*
       <div className="bg-gold">
         <div className="container-luxury py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
               { v: "500+", l: "Corporate Clients" },
-              { v: "₹2Cr+", l: "Gifts Delivered" },
+              { v: "\u20B92Cr+", l: "Gifts Delivered" },
               { v: "100%", l: "On-Time Delivery" },
               { v: "48hrs", l: "Turnaround Time" },
             ].map((s) => (
               <div key={s.l} className="text-center">
-                <p className="font-heading text-3xl md:text-4xl font-bold text-emerald-dark">
-                  {s.v}
-                </p>
-                <p className="font-body text-sm text-emerald-dark/70 mt-1">
-                  {s.l}
-                </p>
+                <p className="font-heading text-3xl md:text-4xl font-bold text-emerald-dark">{s.v}</p>
+                <p className="font-body text-sm text-emerald-dark/70 mt-1">{s.l}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
+      */}
 
       {/* Use Cases */}
       <section className="section-padding bg-white">

@@ -288,25 +288,25 @@ export default function CorporatePage() {
       <div className="bg-emerald py-8">
         <div className="container-luxury flex flex-col md:flex-row items-center justify-center gap-8">
           <a
-            href="tel:+919999999999"
+            href="tel:+919686189610"
             className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
           >
             <Phone size={18} className="text-gold" />
-            <span className="font-body text-sm">+91 99999 99999</span>
+            <span className="font-body text-sm">+91 96861 89610 / +91 96067 12763</span>
           </a>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
           <a
-            href="mailto:corporate@theluxbasket.com"
+            href="mailto:info@theluxbasketgift.com"
             className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
           >
             <Mail size={18} className="text-gold" />
             <span className="font-body text-sm">
-              corporate@theluxbasket.com
+              info@theluxbasketgift.com
             </span>
           </a>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
           <a
-            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! Corporate gifting inquiry`}
+            href={`https://wa.me/919686189610?text=Hi! Corporate gifting inquiry`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-gold py-2.5 px-6 text-xs"

@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   Package,
   Heart,
-  MapPin,
-  Settings,
   ChevronRight,
   User,
 } from "lucide-react";
@@ -15,8 +13,6 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/dashboard", icon: Package, label: "My Orders" },
   { href: "/dashboard/wishlist", icon: Heart, label: "Wishlist" },
-  { href: "/dashboard/addresses", icon: MapPin, label: "Addresses" },
-  { href: "/dashboard/settings", icon: Settings, label: "Settings" },
 ];
 
 export default function DashboardLayout({ children }) {

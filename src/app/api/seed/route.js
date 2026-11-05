@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import connectDB from "@/lib/mongodb";
 import Category from "@/models/Category";
 import Product from "@/models/Product";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
+
+export const runtime = "nodejs";
 
 const initialCategories = [
   {
@@ -230,7 +234,39 @@ const getProductsData = (categoriesMap) => [
   },
 ];
 
-export async function GET() {
+export async function POST(req) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const seedSecret = process.env.SEED_SECRET;
+  const suppliedSecret = req.headers.get("x-seed-secret") || "";
+  if (!seedSecret || seedSecret.length < 32) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const expectedBuffer = Buffer.from(seedSecret);
+  const suppliedBuffer = Buffer.from(suppliedSecret);
+  if (
+    expectedBuffer.length !== suppliedBuffer.length ||
+    !crypto.timingSafeEqual(expectedBuffer, suppliedBuffer)
+  ) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+  if (
+    !z.string().email().safeParse(adminEmail).success ||
+    !adminPassword ||
+    adminPassword.length < 16
+  ) {
+    return NextResponse.json(
+      { error: "Configure a seed admin email and a password of at least 16 characters" },
+      { status: 503 },
+    );
+  }
+
   try {
     await connectDB();
 
@@ -249,32 +285,32 @@ export async function GET() {
     const productsData = getProductsData(categoriesMap);
     await Product.insertMany(productsData);
 
-    // 3. Seed Default Admin User
-    await User.deleteMany({ email: "admin@theluxbasket.com" });
-    const hashedPassword = await bcrypt.hash("admin12345", 10);
-    await User.create({
-      name: "Lux Basket Admin",
-      email: "admin@theluxbasket.com",
-      password: hashedPassword,
-      role: "admin",
-      provider: "credentials",
-      isVerified: true,
-    });
+    // 3. Seed the explicitly configured development admin without revealing its password.
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
+    await User.findOneAndUpdate(
+      { email: adminEmail },
+      {
+        name: "Lux Basket Admin",
+        email: adminEmail,
+        password: hashedPassword,
+        role: "admin",
+        provider: "credentials",
+        isVerified: true,
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
 
     return NextResponse.json({
       success: true,
       message: "Database seeded successfully!",
       categoriesSeeded: createdCategories.length,
       productsSeeded: productsData.length,
-      adminCreated: {
-        email: "admin@theluxbasket.com",
-        password: "admin12345 (Change this immediately in production)",
-      },
+      adminCreated: { email: adminEmail },
     });
   } catch (error) {
     console.error("Seeding error:", error);
     return NextResponse.json(
-      { error: "Failed to seed database", details: error.message },
+      { error: "Failed to seed database" },
       { status: 500 },
     );
   }

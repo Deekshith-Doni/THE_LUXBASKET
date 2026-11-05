@@ -95,9 +95,9 @@ export default function Navbar() {
         )}
       >
         <div className="container-luxury">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
-            <Link href="/" className="flex flex-col items-start group">
+            <Link href="/" className="flex flex-col items-start group shrink-0">
               <span className="font-heading text-2xl font-medium text-emerald tracking-wide leading-none group-hover:text-gold transition-colors duration-300">
                 The Lux Basket
               </span>
@@ -172,11 +172,11 @@ export default function Navbar() {
             </div>
 
             {/* Right Icons */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-0.5 sm:gap-4">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 text-charcoal/70 hover:text-emerald transition-colors duration-200"
+                className="w-11 h-11 flex items-center justify-center text-charcoal/70 hover:text-emerald transition-colors duration-200"
                 aria-label="Search"
               >
                 <Search size={20} />
@@ -185,7 +185,7 @@ export default function Navbar() {
               {/* Wishlist */}
               <Link
                 href="/dashboard/wishlist"
-                className="relative p-2 text-charcoal/70 hover:text-emerald transition-colors duration-200"
+                className="relative w-11 h-11 flex items-center justify-center text-charcoal/70 hover:text-emerald transition-colors duration-200"
                 aria-label="Wishlist"
               >
                 <Heart size={20} />
@@ -199,7 +199,7 @@ export default function Navbar() {
               {/* Cart */}
               <button
                 onClick={openCart}
-                className="relative p-2 text-charcoal/70 hover:text-emerald transition-colors duration-200"
+                className="relative w-11 h-11 flex items-center justify-center text-charcoal/70 hover:text-emerald transition-colors duration-200"
                 aria-label="Shopping cart"
               >
                 <ShoppingBag size={20} />
@@ -238,12 +238,6 @@ export default function Navbar() {
                       >
                         Wishlist
                       </Link>
-                      <Link
-                        href="/dashboard/settings"
-                        className="block px-4 py-2.5 text-sm font-body text-charcoal hover:bg-beige-light hover:text-emerald transition-colors"
-                      >
-                        Settings
-                      </Link>
                       {session.user?.role === "admin" && (
                         <Link
                           href="/admin"
@@ -264,7 +258,7 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/auth/login"
-                  className="hidden lg:flex btn-primary py-2.5 px-5 text-xs"
+                  className="hidden lg:flex btn-primary min-h-11 py-2.5 px-5 text-xs"
                 >
                   Sign In
                 </Link>
@@ -273,8 +267,9 @@ export default function Navbar() {
               {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setIsMobileOpen(!isMobileOpen)}
-                className="lg:hidden p-2 text-charcoal/70 hover:text-emerald transition-colors"
+                className="lg:hidden w-11 h-11 flex items-center justify-center text-charcoal/70 hover:text-emerald transition-colors"
                 aria-label="Toggle menu"
+                aria-expanded={isMobileOpen}
               >
                 {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
@@ -310,7 +305,7 @@ export default function Navbar() {
                     autoFocus
                   />
 
-                  <button type="submit" className="btn-primary py-3 px-6">
+                  <button type="submit" className="btn-primary min-h-11 py-3 px-6">
                     <Search size={16} />
                   </button>
                 </form>
@@ -334,7 +329,7 @@ export default function Navbar() {
                     <Link
                       href={link.href}
                       onClick={() => setIsMobileOpen(false)}
-                      className="block py-3 text-sm font-body font-medium text-charcoal/80 hover:text-emerald border-b border-beige/50 transition-colors"
+                      className="flex min-h-11 items-center py-3 text-sm font-body font-medium text-charcoal/80 hover:text-emerald border-b border-beige/50 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -345,7 +340,7 @@ export default function Navbar() {
                             key={child.href}
                             href={child.href}
                             onClick={() => setIsMobileOpen(false)}
-                            className="block py-2 text-xs font-body text-charcoal/60 hover:text-gold transition-colors"
+                            className="flex min-h-11 items-center py-2 text-xs font-body text-charcoal/60 hover:text-gold transition-colors"
                           >
                             → {child.label}
                           </Link>

@@ -6,6 +6,7 @@ import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
 import { Heart, ShoppingBag, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { trackEvent } from "@/lib/analytics";
 
 export default function WishlistPage() {
   const { items, removeItem } = useWishlistStore();
@@ -78,6 +79,11 @@ export default function WishlistPage() {
                       price: item.discountPrice || item.price,
                       quantity: 1,
                       slug: item.slug,
+                    });
+                    trackEvent("add_to_cart", {
+                      currency: "INR",
+                      value: item.discountPrice || item.price,
+                      items: [{ item_id: item.id, item_name: item.name, price: item.discountPrice || item.price, quantity: 1 }],
                     });
                     openCart();
                     toast.success("Added to basket!");

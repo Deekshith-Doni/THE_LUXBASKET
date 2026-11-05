@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Terms & Conditions | The Lux Basket",
-  description: "Terms and conditions for using our website and services.",
-};
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Terms and Conditions",
+  description: "Read the terms for using The Lux Basket website, placing orders, and receiving our services.",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

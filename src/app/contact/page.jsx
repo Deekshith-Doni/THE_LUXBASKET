@@ -9,8 +9,13 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
+import { getAlternateWhatsAppNumber, getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
+import { CONTACT_EMAILS } from "@/lib/contact";
 
 export default function ContactPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -23,17 +28,20 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const website = new FormData(e.currentTarget).get("website");
     setIsLoading(true);
     try {
       const res = await fetch("/api/inquiries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, website }),
       });
       const data = await res.json();
       if (res.ok) {
         setSubmitted(true);
+        trackEvent("enquiry_submit", { section: "contact", enquiry_type: form.type });
         toast.success("Message sent! We'll get back to you soon.");
+        router.push("/thank-you?type=contact");
       } else {
         toast.error(data.error || "Failed to send message. Please try again.");
       }
@@ -73,20 +81,24 @@ export default function ContactPage() {
                     isMultiLink: true,
                     links: [
                       {
-                        value: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610",
-                        href: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`,
+                        value: getWhatsAppNumber(),
+                        href: getWhatsAppUrl(getWhatsAppNumber(), "Hi! I have a question about The Lux Basket."),
                       },
                       {
-                        value: process.env.NEXT_PUBLIC_ALTERNATE_NUMBER || "+91 96067 12763",
-                        href: `https://wa.me/${process.env.NEXT_PUBLIC_ALTERNATE_NUMBER?.replace(/[^0-9]/g, "")}`,
+                        value: getAlternateWhatsAppNumber(),
+                        href: getWhatsAppUrl(getAlternateWhatsAppNumber(), "Hi! I have a question about The Lux Basket."),
                       },
                     ],
                   },
                   {
                     icon: Mail,
                     label: "Email",
-                    value: "info@theluxbasketgift.com",
-                    href: "mailto:info@theluxbasketgift.com",
+                    isMultiLink: true,
+                    links: CONTACT_EMAILS.map((email) => ({
+                      value: email,
+                      href: `mailto:${email}`,
+                      channel: "email",
+                    })),
                   },
                   {
                     icon: MapPin,
@@ -113,7 +125,7 @@ export default function ContactPage() {
                         <div className="flex flex-wrap gap-2 text-sm font-body text-charcoal">
                           {item.links.map((link, i) => (
                             <span key={i} className="flex gap-2">
-                              <a href={link.href} className="hover:text-emerald transition-colors">
+                              <a href={link.href} onClick={() => trackEvent("contact_click", { section: "contact_details", channel: link.channel || "whatsapp" })} className="hover:text-emerald transition-colors">
                                 {link.value}
                               </a>
                               {i < item.links.length - 1 && <span className="text-charcoal/30">/</span>}
@@ -125,6 +137,7 @@ export default function ContactPage() {
                           href={item.href} 
                           target={item.href.startsWith("http") ? "_blank" : undefined}
                           rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          onClick={() => trackEvent(item.href.startsWith("http") ? "outbound_click" : "contact_click", { section: "contact_details", channel: item.href.startsWith("mailto:") ? "email" : "location" })}
                           className="font-body text-sm text-charcoal hover:text-emerald transition-colors block"
                         >
                           {item.value}
@@ -138,10 +151,11 @@ export default function ContactPage() {
 
             {/* WhatsApp CTA */}
             <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'd like to know more about The Lux Basket.`}
+              href={getWhatsAppUrl(getWhatsAppNumber(), "Hi! I'd like to know more about The Lux Basket.")}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 bg-[#25D366]/10 border border-[#25D366]/30 text-[#128C7E] font-body text-sm font-medium hover:bg-[#25D366]/20 transition-colors"
+              onClick={() => trackEvent("contact_click", { section: "contact", channel: "whatsapp" })}
             >
               <MessageCircle size={20} />
               Chat on WhatsApp — we respond fast!
@@ -182,15 +196,22 @@ export default function ContactPage() {
                 onSubmit={handleSubmit}
                 className="bg-white border border-beige p-8 space-y-6"
               >
+                <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">
+                  <label htmlFor="contact-website">Leave this field empty</label>
+                  <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+                </div>
                 <h2 className="font-heading text-2xl text-charcoal">
                   Send us a Message
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="luxury-label">Your Name *</label>
+                    <label htmlFor="contact-name" className="luxury-label">Your Name *</label>
                     <input
+                      id="contact-name"
                       type="text"
                       required
+                      minLength={2}
+                      maxLength={100}
                       value={form.name}
                       onChange={(e) =>
                         setForm({ ...form, name: e.target.value })
@@ -200,10 +221,12 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="luxury-label">Email *</label>
+                    <label htmlFor="contact-email" className="luxury-label">Email *</label>
                     <input
+                      id="contact-email"
                       type="email"
                       required
+                      maxLength={254}
                       value={form.email}
                       onChange={(e) =>
                         setForm({ ...form, email: e.target.value })
@@ -213,10 +236,12 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="luxury-label">Phone *</label>
+                    <label htmlFor="contact-phone" className="luxury-label">Phone *</label>
                     <input
+                      id="contact-phone"
                       type="tel"
                       required
+                      pattern="[+0-9 ()-]{10,18}"
                       value={form.phone}
                       onChange={(e) =>
                         setForm({ ...form, phone: e.target.value })
@@ -226,8 +251,9 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="luxury-label">Inquiry Type</label>
+                    <label htmlFor="contact-type" className="luxury-label">Inquiry Type</label>
                     <select
+                      id="contact-type"
                       value={form.type}
                       onChange={(e) =>
                         setForm({ ...form, type: e.target.value })
@@ -243,9 +269,12 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="luxury-label">Message *</label>
+                  <label htmlFor="contact-message" className="luxury-label">Message *</label>
                   <textarea
+                    id="contact-message"
                     required
+                    minLength={10}
+                    maxLength={3000}
                     value={form.message}
                     onChange={(e) =>
                       setForm({ ...form, message: e.target.value })
@@ -276,8 +305,11 @@ export default function ContactPage() {
                 frameBorder="0" 
                 style={{ border: 0 }}
                 src="https://maps.google.com/maps?q=Begur,%20Bengaluru,%20Karnataka,%20India&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                title="The Lux Basket location in Bengaluru"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
-              ></iframe>
+              />
             </div>
           </div>
         </div>

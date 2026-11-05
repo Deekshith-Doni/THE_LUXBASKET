@@ -9,6 +9,17 @@ const OrderItemSchema = new Schema({
   customization: { type: String },
 });
 
+const CampaignTouchSchema = new Schema({
+  source: { type: String, maxlength: 200 },
+  medium: { type: String, maxlength: 200 },
+  campaign: { type: String, maxlength: 200 },
+  term: { type: String, maxlength: 200 },
+  content: { type: String, maxlength: 200 },
+  campaignId: { type: String, maxlength: 200 },
+  landingPage: { type: String, maxlength: 500 },
+  capturedAt: { type: Date },
+}, { _id: false });
+
 const OrderSchema = new Schema(
   {
     orderId: { type: String, required: true, unique: true },
@@ -28,6 +39,10 @@ const OrderSchema = new Schema(
     shippingCharge: { type: Number, default: 0 },
     total: { type: Number, required: true },
     couponCode: { type: String },
+    attribution: {
+      firstTouch: { type: CampaignTouchSchema },
+      lastTouch: { type: CampaignTouchSchema },
+    },
     status: {
       type: String,
       enum: [
@@ -47,8 +62,8 @@ const OrderSchema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["cod", "online", "bank_transfer"],
-      default: "cod",
+      enum: ["online", "bank_transfer"],
+      default: "online",
     },
     notes: { type: String },
     trackingNumber: { type: String },

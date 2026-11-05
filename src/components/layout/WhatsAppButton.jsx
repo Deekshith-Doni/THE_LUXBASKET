@@ -1,9 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
-import { getWhatsAppUrl } from "@/lib/utils";
+import { getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 export default function WhatsAppButton() {
-  const phone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+919686189610";
+  const phone = getWhatsAppNumber();
   const message =
     "Hi! I'm interested in ordering from The Lux Basket. Can you help me?";
   const url = getWhatsAppUrl(phone, message);
@@ -14,6 +15,7 @@ export default function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
+      onClick={() => trackEvent("contact_click", { section: "floating_button", channel: "whatsapp" })}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 2, type: "spring", stiffness: 260, damping: 20 }}

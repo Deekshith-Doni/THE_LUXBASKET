@@ -249,7 +249,7 @@ export default function AdminBannersPage() {
                 </div>
                 <div>
                   <label className="luxury-label">Button Link</label>
-                  <input required type="text" value={formData.link} onChange={(e) => setFormData(p => ({...p, link: e.target.value}))} className="luxury-input text-sm" placeholder="/category/festive" />
+                  <input required type="text" value={formData.link} onChange={(e) => setFormData(p => ({...p, link: e.target.value}))} className="luxury-input text-sm" placeholder="/collections?category=festive" />
                 </div>
               </div>
 

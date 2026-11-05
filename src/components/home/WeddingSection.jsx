@@ -116,7 +116,7 @@ export default function WeddingSection() {
                 Browse Wedding Gifts
                 <ArrowRight size={16} />
               </Link>
-              <Link href="/contact?type=wedding" className="btn-outline">
+              <Link href="/contact" className="btn-outline">
                 Get Custom Quote
               </Link>
             </div>

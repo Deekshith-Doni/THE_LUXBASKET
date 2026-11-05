@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, subtotal } =
@@ -162,7 +163,14 @@ export default function CartDrawer() {
                 </p>
                 <Link
                   href="/checkout"
-                  onClick={closeCart}
+                  onClick={() => {
+                    trackEvent("begin_checkout", {
+                      currency: "INR",
+                      value: total,
+                      items: items.map((item) => ({ item_id: item.id, item_name: item.name, price: item.price, quantity: item.quantity })),
+                    });
+                    closeCart();
+                  }}
                   className="btn-primary w-full text-center justify-center"
                 >
                   Proceed to Checkout

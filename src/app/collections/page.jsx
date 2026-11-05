@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import ProductCard from "@/components/products/ProductCard";
+import { trackEvent } from "@/lib/analytics";
 
 
 
@@ -17,8 +18,6 @@ const sortOptions = [
   { label: "Newest First", value: "createdAt-desc" },
   { label: "Price: Low to High", value: "price-asc" },
   { label: "Price: High to Low", value: "price-desc" },
-  { label: "Best Rating", value: "rating-desc" },
-  { label: "Most Reviews", value: "numReviews-desc" },
 ];
 
 function CollectionsContent() {
@@ -86,14 +85,21 @@ function CollectionsContent() {
       const priceB = b.discountPrice || b.price;
       return priceB - priceA;
     }
-    if (activeSort === "rating-desc") {
-      return (b.rating || 0) - (a.rating || 0);
-    }
-    if (activeSort === "numReviews-desc") {
-      return (b.numReviews || 0) - (a.numReviews || 0);
-    }
     return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
   });
+
+  useEffect(() => {
+    if (!products.length || !sortedProducts.length) return;
+    trackEvent("view_item_list", {
+      item_list_name: activeCategory || "all_gifts",
+      items: sortedProducts.slice(0, 24).map((product, index) => ({
+        item_id: product._id,
+        item_name: product.name,
+        price: product.discountPrice || product.price,
+        index: index + 1,
+      })),
+    });
+  }, [products, activeCategory, activeSort, searchQuery, priceRange]);
 
   return (
     <div className="min-h-screen bg-ivory">
@@ -136,8 +142,11 @@ function CollectionsContent() {
             {categories.map((cat) => (
               <button
                 key={cat.value}
-                onClick={() => setActiveCategory(cat.value)}
-                className={`px-4 py-2 text-xs font-body font-semibold tracking-widest uppercase border transition-all duration-200 ${
+                onClick={() => {
+                  setActiveCategory(cat.value);
+                  if (cat.value) trackEvent("category_click", { item_name: cat.label, section: "collections_filters" });
+                }}
+                className={`min-h-11 px-4 py-2 text-xs font-body font-semibold tracking-widest uppercase border transition-all duration-200 ${
                   activeCategory === cat.value
                     ? "bg-emerald text-ivory border-emerald"
                     : "bg-white text-charcoal/60 border-beige hover:border-emerald hover:text-emerald"
@@ -161,7 +170,7 @@ function CollectionsContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search gifts..."
-                className="luxury-input pl-9 py-2 text-sm w-48"
+                className="luxury-input min-h-11 pl-9 py-2 text-sm w-48"
               />
             </div>
 
@@ -170,7 +179,7 @@ function CollectionsContent() {
               <select
                 value={activeSort}
                 onChange={(e) => setActiveSort(e.target.value)}
-                className="luxury-input py-2 text-sm pr-8 appearance-none cursor-pointer min-w-40"
+                className="luxury-input min-h-11 py-2 text-sm pr-8 appearance-none cursor-pointer min-w-40"
               >
                 {sortOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -187,7 +196,7 @@ function CollectionsContent() {
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 px-4 py-2 border text-sm font-body transition-colors ${
+              className={`flex min-h-11 items-center gap-2 px-4 py-2 border text-sm font-body transition-colors ${
                 showFilters
                   ? "bg-emerald text-ivory border-emerald"
                   : "bg-white text-charcoal border-beige hover:border-emerald"
@@ -304,8 +313,8 @@ function CollectionsContent() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {sortedProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
+            {sortedProducts.map((product, index) => (
+              <ProductCard key={product._id} product={product} section="collections" position={index + 1} />
             ))}
           </div>
         )}

@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import { getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
 
 const faqs = [
   {
@@ -124,14 +126,15 @@ export default function FAQSection() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I have a question about The Lux Basket.`}
+                href={getWhatsAppUrl(getWhatsAppNumber(), "Hi! I have a question about The Lux Basket.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary"
+                onClick={() => trackEvent("contact_click", { section: "faq", channel: "whatsapp" })}
               >
                 WhatsApp Us
               </a>
-              <a href="/contact" className="btn-outline">
+              <a href="/contact" className="btn-outline" onClick={() => trackEvent("cta_click", { section: "faq", item_name: "Contact Us" })}>
                 Contact Us
               </a>
             </div>

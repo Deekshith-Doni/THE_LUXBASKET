@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Privacy Policy | The Lux Basket",
-  description: "How we collect, use, and protect your personal information.",
-};
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Privacy Policy",
+  description: "Learn how The Lux Basket handles account, order, contact, and optional analytics information.",
+  path: "/privacy",
+});
 
 export default function PrivacyPolicyPage() {
   return (
@@ -29,11 +32,14 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-heading text-charcoal mt-8">Data Security</h2>
             <p>We implement a variety of security measures to maintain the safety of your personal information. All sensitive payment data is transmitted via Secure Socket Layer (SSL) technology and encrypted into our payment gateway providers' database.</p>
             
-            <h2 className="text-2xl font-heading text-charcoal mt-8">Cookies</h2>
-            <p>We use cookies to enhance your shopping experience, remember your preferences, and analyze site traffic. You can choose to disable cookies through your browser settings, though some features of our site may not function properly.</p>
+            <h2 className="text-2xl font-heading text-charcoal mt-8">Cookies and analytics</h2>
+            <p>Essential sign-in and shopping features use browser storage to keep your session, basket, and preferences working. Optional Google Analytics 4 measurement is disabled unless you choose “Allow analytics” in the cookie notice. If you allow it, we use analytics to understand visits and campaign performance. You can change or withdraw that choice at any time using “Cookie settings” at the bottom of the site.</p>
+            <p>When analytics is allowed, campaign parameters such as source and campaign name may be stored in your browser and associated with an order so we can understand which campaigns lead to purchases. We do not store payment card details; payments are handled by our payment provider.</p>
+            <p>If you reject or withdraw optional analytics, analytics storage and saved campaign attribution are removed. Your account, basket, and checkout features remain available.</p>
             
             <h2 className="text-2xl font-heading text-charcoal mt-8">Changes to this Policy</h2>
             <p>We may update this privacy policy from time to time. Any changes will be posted on this page with an updated revision date.</p>
+            <p className="pt-4 text-xs text-charcoal/60">Last updated: 5 November 2026</p>
           </div>
         </div>
       </section>

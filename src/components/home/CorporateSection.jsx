@@ -2,6 +2,8 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Building2, Users, Package, Award, ArrowRight } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import { getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
 
 const features = [
   {
@@ -126,15 +128,16 @@ export default function CorporateSection() {
               transition={{ delay: 0.6 }}
               className="flex flex-wrap gap-4"
             >
-              <Link href="/corporate" className="btn-gold">
+              <Link href="/corporate" className="btn-gold" onClick={() => trackEvent("cta_click", { section: "corporate", item_name: "Get a Quote" })}>
                 Get a Quote
                 <ArrowRight size={16} />
               </Link>
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'm interested in corporate gifting.`}
+                href={getWhatsAppUrl(getWhatsAppNumber(), "Hi! I'm interested in corporate gifting.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline-gold"
+                onClick={() => trackEvent("contact_click", { section: "corporate", channel: "whatsapp" })}
               >
                 WhatsApp Us
               </a>

@@ -9,12 +9,15 @@ import {
   Mail,
 } from "lucide-react";
 import CorporateInquiryForm from "@/components/corporate/CorporateInquiryForm";
+import { createPageMetadata } from "@/lib/metadata";
+import { CONTACT_EMAILS } from "@/lib/contact";
+import { getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
 
-export const metadata = {
-  title: "Corporate Gifting | The Lux Basket",
-  description:
-    "Premium corporate gifting solutions. Bulk orders, custom branding, Diwali hampers, employee gifts. 500+ corporate clients across India.",
-};
+export const metadata = createPageMetadata({
+  title: "Corporate Gifting",
+  description: "Explore corporate gifting, bulk orders, custom branding, and premium employee gift hampers from The Lux Basket.",
+  path: "/corporate",
+});
 
 const workflowSteps = [
   {
@@ -91,7 +94,7 @@ export default function CorporatePage() {
                 Get a Free Quote <ArrowRight size={16} />
               </a>
               <a
-                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}?text=Hi! I'm interested in corporate gifting for my company.`}
+                href={getWhatsAppUrl(getWhatsAppNumber(), "Hi! I'm interested in corporate gifting for my company.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-outline-gold"
@@ -303,15 +306,18 @@ export default function CorporatePage() {
             <span className="font-body text-sm">+91 96067 12763</span>
           </a>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
-          <a
-            href="mailto:info@theluxbasketgift.com"
-            className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
-          >
-            <Mail size={18} className="text-gold" />
-            <span className="font-body text-sm">
-              info@theluxbasketgift.com
-            </span>
-          </a>
+          <div className="flex flex-col gap-2">
+            {CONTACT_EMAILS.map((email) => (
+              <a
+                key={email}
+                href={`mailto:${email}`}
+                className="flex items-center gap-3 text-ivory hover:text-gold transition-colors"
+              >
+                <Mail size={18} className="text-gold" />
+                <span className="font-body text-sm">{email}</span>
+              </a>
+            ))}
+          </div>
           <span className="hidden md:block w-px h-6 bg-ivory/20" />
           <a
             href={`https://wa.me/919686189610?text=Hi! Corporate gifting inquiry`}

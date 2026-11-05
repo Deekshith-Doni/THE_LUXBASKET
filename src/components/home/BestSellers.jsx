@@ -1,201 +1,268 @@
 "use client";
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Star, ShoppingBag } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
-import { useCartStore } from "@/store/cartStore";
-import toast from "react-hot-toast";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import ProductCard from "@/components/products/ProductCard";
+import { trackEvent } from "@/lib/analytics";
 
+const CAROUSEL_TITLE = "Featured Gifts";
 
-export default function BestSellers() {
-  const [bestSellers, setBestSellers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { addItem, openCart } = useCartStore();
+function ProductCarousel({ items }) {
+  const trackRef = useRef(null);
+  const mobileTrackRef = useRef(null);
+  const scrollTimer = useRef(null);
+  const mobileScrollTimer = useRef(null);
+  const dotCount = Math.min(5, Math.max(1, Math.ceil(items.length / 4)));
+  const mobilePageCount = Math.ceil(items.length / 4);
+  const [activeDot, setActiveDot] = useState(0);
+  const [activeMobilePage, setActiveMobilePage] = useState(0);
 
   useEffect(() => {
-    fetch("/api/products?limit=4&bestSeller=true")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.products) {
-          setBestSellers(data.products);
-        }
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+    const track = trackRef.current;
+    if (!track) return;
 
-  const handleAddToCart = (e, product) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem({
-      id: product._id,
-      name: product.name,
-      image: product.images[0],
-      price: product.discountPrice || product.price,
-      quantity: 1,
-      slug: product.slug,
-    });
-    openCart();
-    toast.success("Added to your basket!");
+    const updateActiveDot = () => {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const progress = maxScroll > 0 ? track.scrollLeft / maxScroll : 0;
+      setActiveDot(Math.round(progress * (dotCount - 1)));
+    };
+
+    const updateMobilePage = () => {
+      const mobileTrack = mobileTrackRef.current;
+      if (!mobileTrack?.clientWidth) return;
+      const page = Math.round(mobileTrack.scrollLeft / mobileTrack.clientWidth);
+      setActiveMobilePage(Math.min(page, mobilePageCount - 1));
+    };
+
+    updateActiveDot();
+    updateMobilePage();
+    window.addEventListener("resize", updateActiveDot);
+    window.addEventListener("resize", updateMobilePage);
+    return () => {
+      window.removeEventListener("resize", updateActiveDot);
+      window.removeEventListener("resize", updateMobilePage);
+      clearTimeout(scrollTimer.current);
+      clearTimeout(mobileScrollTimer.current);
+    };
+  }, [dotCount, mobilePageCount]);
+
+  const handleScroll = () => {
+    clearTimeout(scrollTimer.current);
+    scrollTimer.current = setTimeout(() => {
+      const track = trackRef.current;
+      if (!track) return;
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      const progress = maxScroll > 0 ? track.scrollLeft / maxScroll : 0;
+      setActiveDot(Math.round(progress * (dotCount - 1)));
+      trackEvent("carousel_scroll", {
+        section: CAROUSEL_TITLE,
+        position: Math.round(progress * (items.length - 1)) + 1,
+      });
+    }, 100);
   };
 
-  if (loading) {
-    return (
-      <section className="section-padding bg-white">
-        <div className="container-luxury">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-            <div>
-              <span className="section-tag">Best Sellers</span>
-              <h2 className="section-title mt-3">Most Loved Gifts</h2>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="skeleton h-[350px] w-full bg-beige/20 animate-pulse rounded-lg border border-beige/40" />
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const scroll = (direction) => {
+    const track = trackRef.current;
+    if (!track) return;
+    track.scrollBy({
+      left: direction * track.clientWidth * 0.85,
+      behavior: "smooth",
+    });
+  };
 
-  if (!bestSellers || bestSellers.length === 0) {
-    return null;
-  }
+  const scrollToDot = (index) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    const target = dotCount > 1 ? (maxScroll * index) / (dotCount - 1) : 0;
+    track.scrollTo({ left: target, behavior: "smooth" });
+    setActiveDot(index);
+  };
+
+  const handleMobileScroll = () => {
+    clearTimeout(mobileScrollTimer.current);
+    mobileScrollTimer.current = setTimeout(() => {
+      const track = mobileTrackRef.current;
+      if (!track?.clientWidth) return;
+      const page = Math.min(
+        Math.round(track.scrollLeft / track.clientWidth),
+        mobilePageCount - 1,
+      );
+      setActiveMobilePage(page);
+      trackEvent("carousel_scroll", {
+        section: CAROUSEL_TITLE,
+        position: page * 4 + 1,
+      });
+    }, 100);
+  };
+
+  const scrollToMobilePage = (index) => {
+    const track = mobileTrackRef.current;
+    if (!track) return;
+    track.scrollTo({ left: track.clientWidth * index, behavior: "smooth" });
+    setActiveMobilePage(index);
+  };
+
+  const mobilePages = Array.from({ length: mobilePageCount }, (_, pageIndex) =>
+    items.slice(pageIndex * 4, pageIndex * 4 + 4),
+  );
 
   return (
-    <section className="section-padding bg-white">
-      <div className="container-luxury">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-          <div>
-            <motion.span
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="section-tag"
-            >
-              Best Sellers
-            </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="section-title mt-3"
-            >
-              Most Loved Gifts
-            </motion.h2>
-          </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
+    <>
+      <div className="product-carousel-shell">
+        <button
+          type="button"
+          onClick={() => scroll(-1)}
+          className="carousel-arrow carousel-arrow-prev"
+          aria-label="Show previous gifts"
+        >
+          <ArrowLeft size={19} />
+        </button>
+        <div
+          ref={trackRef}
+          className="product-rail-track product-carousel-track"
+          onScroll={handleScroll}
+          role="region"
+          aria-label={CAROUSEL_TITLE}
+          aria-labelledby="featured-products-heading"
+          tabIndex={0}
+        >
+          {items.map((product, index) => (
+            <ProductCard
+              key={`desktop-${product._id}`}
+              product={product}
+              section={CAROUSEL_TITLE}
+              position={index + 1}
+              className="product-rail-card"
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => scroll(1)}
+          className="carousel-arrow carousel-arrow-next"
+          aria-label="Show more gifts"
+        >
+          <ArrowRight size={19} />
+        </button>
+      </div>
+
+      {dotCount > 1 && (
+        <div className="carousel-dots desktop-carousel-dots" role="group" aria-label="Choose product carousel position">
+          {Array.from({ length: dotCount }, (_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => scrollToDot(index)}
+              className={`carousel-dot ${activeDot === index ? "is-active" : ""}`}
+              aria-label={`Go to product section ${index + 1} of ${dotCount}`}
+              aria-pressed={activeDot === index}
+            />
+          ))}
+        </div>
+      )}
+
+      <div
+        ref={mobileTrackRef}
+        className="mobile-product-carousel"
+        onScroll={handleMobileScroll}
+        role="region"
+        aria-label={`${CAROUSEL_TITLE} carousel`}
+        aria-labelledby="featured-products-heading"
+        tabIndex={0}
+      >
+        {mobilePages.map((page, pageIndex) => (
+          <div
+            key={`page-${pageIndex}`}
+            className="mobile-product-page"
+            role="group"
+            aria-label={`Product group ${pageIndex + 1} of ${mobilePageCount}`}
           >
-            <Link href="/collections?bestSeller=true" className="btn-outline">
-              View All
-              <ArrowRight size={16} />
-            </Link>
-          </motion.div>
+            {page.map((product, productIndex) => (
+              <ProductCard
+                key={`mobile-${product._id}`}
+                product={product}
+                section={CAROUSEL_TITLE}
+                position={pageIndex * 4 + productIndex + 1}
+                className="mobile-product-card"
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {mobilePageCount > 1 && (
+        <div className="carousel-dots mobile-carousel-dots" role="group" aria-label="Choose a group of mobile products">
+          {mobilePages.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => scrollToMobilePage(index)}
+              className={`carousel-dot ${activeMobilePage === index ? "is-active" : ""}`}
+              aria-label={`Show product group ${index + 1} of ${mobilePageCount}`}
+              aria-pressed={activeMobilePage === index}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+export default function BestSellers() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/products?limit=25&sort=createdAt&order=desc")
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Products unavailable"))))
+      .then((data) => setProducts(data.products || []))
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <section className="product-showcase-section bg-white">
+      <div className="container-luxury">
+        <div className="product-section-heading flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-7">
+          <div>
+            <span className="section-tag">Thoughtfully curated</span>
+            <h2
+              id="featured-products-heading"
+              className="font-heading text-3xl sm:text-4xl md:text-5xl font-medium text-charcoal mt-1"
+            >
+              Find a Gift to Remember
+            </h2>
+          </div>
+          <Link
+            href="/collections"
+            className="inline-flex items-center gap-2 min-h-11 text-sm font-medium text-emerald hover:text-gold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+          >
+            Explore all gifts <ArrowRight size={16} />
+          </Link>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {bestSellers.map((product, i) => {
-            const price = product.discountPrice || product.price;
-            const discount = product.discountPrice
-              ? Math.round(
-                  ((product.price - product.discountPrice) / product.price) *
-                    100,
-                )
-              : 0;
-
-            return (
-              <motion.div
-                key={product._id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group bg-white border border-beige hover:border-gold/30 hover:shadow-card-hover transition-all duration-400"
-              >
-                <Link href={`/product/${product.slug}`}>
-                  {/* Image */}
-                  <div className="relative overflow-hidden aspect-square bg-beige-light">
-                    <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                      style={{ backgroundImage: `url(${product.images[0]})` }}
-                    />
-
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 space-y-1.5">
-                      {discount > 0 && (
-                        <span className="badge-sale text-xs block">
-                          -{discount}%
-                        </span>
-                      )}
-                      {product.isNewArrival && (
-                        <span className="badge-emerald text-xs block">New</span>
-                      )}
-                      {product.isBestSeller && (
-                        <span className="badge-gold text-xs block">
-                          Best Seller
-                        </span>
-                      )}
-                    </div>
-                    {/* Hover overlay */}
-                    <div className="absolute inset-0 bg-emerald/0 group-hover:bg-emerald/10 transition-colors duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                      <button
-                        onClick={(e) => handleAddToCart(e, product)}
-                        className="w-full btn-primary py-2.5 text-xs justify-center gap-2 flex"
-                      >
-                        <ShoppingBag size={14} />
-                        Add to Basket
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="p-4">
-                    <p className="text-xs text-charcoal/40 font-body tracking-widest uppercase mb-1">
-                      {typeof product.category === "object" ? product.category.name : "Best Seller"}
-                    </p>
-                    <h3 className="font-heading text-base font-medium text-charcoal group-hover:text-emerald transition-colors line-clamp-2 leading-snug">
-                      {product.name}
-                    </h3>
-                    <p className="text-xs font-body text-charcoal/50 mt-1 line-clamp-1">
-                      {product.shortDescription}
-                    </p>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-1.5 mt-2">
-                      <Star size={11} className="text-gold fill-gold" />
-                      <span className="text-xs font-body text-charcoal/60">
-                        {product.rating} ({product.numReviews})
-                      </span>
-                    </div>
-
-                    {/* Price */}
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="font-heading text-lg font-medium text-emerald">
-                        {formatPrice(price)}
-                      </span>
-                      {product.discountPrice && (
-                        <span className="text-sm font-body text-charcoal/40 line-through">
-                          {formatPrice(product.price)}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
+        {loading ? (
+          <>
+            <div className="product-carousel-shell" aria-hidden="true">
+              <div className="product-rail-track product-carousel-track">
+                {[1, 2, 3, 4].map((item) => (
+                  <div key={item} className="product-rail-skeleton skeleton" />
+                ))}
+              </div>
+            </div>
+            <div className="mobile-product-carousel" aria-hidden="true">
+              <div className="mobile-product-page">
+                {[1, 2, 3, 4].map((item) => (
+                  <div key={item} className="mobile-product-skeleton skeleton" />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : products.length ? (
+          <ProductCarousel items={products} />
+        ) : null}
       </div>
     </section>
   );

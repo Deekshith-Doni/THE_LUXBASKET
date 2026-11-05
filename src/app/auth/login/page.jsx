@@ -176,10 +176,10 @@ export default function LoginPage() {
               <div className="flex items-center justify-between mb-1.5">
                 <label className="luxury-label mb-0">Password</label>
                 <Link
-                  href="/auth/forgot-password"
+                  href="/contact"
                   className="text-xs font-body text-charcoal/50 hover:text-gold transition-colors"
                 >
-                  Forgot password?
+                  Need sign-in help?
                 </Link>
               </div>
               <div className="relative">

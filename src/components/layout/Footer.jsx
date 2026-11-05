@@ -5,12 +5,13 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import {
   Instagram,
-  Facebook,
-  Twitter,
   Mail,
   Phone,
   MapPin,
 } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import { getAlternateWhatsAppNumber, getWhatsAppNumber, getWhatsAppUrl } from "@/lib/utils";
+import { CONTACT_EMAILS } from "@/lib/contact";
 
 const footerLinks = {
   company: [
@@ -52,6 +53,7 @@ export default function Footer() {
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
+    const website = new FormData(e.currentTarget).get("website");
     if (!email) return toast.error("Please enter your email address");
 
     setLoading(true);
@@ -59,7 +61,7 @@ export default function Footer() {
       const res = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, website }),
       });
 
       const data = await res.json();
@@ -91,8 +93,13 @@ export default function Footer() {
             className="flex gap-0 w-full md:w-auto"
             onSubmit={handleSubscribe}
           >
+            <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">
+              <label htmlFor="newsletter-website">Leave this field empty</label>
+              <input id="newsletter-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
             <input
               type="email"
+              aria-label="Email address for newsletter"
               placeholder="Your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -137,29 +144,38 @@ export default function Footer() {
                 <Phone size={14} className="text-gold flex-shrink-0" />
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/[^0-9]/g, "")}`}
+                    href={getWhatsAppUrl(getWhatsAppNumber(), "Hi! I would like to know more about The Lux Basket.")}
+                    onClick={() => trackEvent("contact_click", { section: "footer", channel: "whatsapp" })}
                     className="hover:text-gold transition-colors"
                   >
-                    {process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610"}
+                    {getWhatsAppNumber()}
                   </a>
                   <span className="text-ivory/30">/</span>
                   <a
-                    href={`https://wa.me/${process.env.NEXT_PUBLIC_ALTERNATE_NUMBER?.replace(/[^0-9]/g, "")}`}
+                    href={getWhatsAppUrl(getAlternateWhatsAppNumber(), "Hi! I would like to know more about The Lux Basket.")}
+                    onClick={() => trackEvent("contact_click", { section: "footer", channel: "whatsapp" })}
                     className="hover:text-gold transition-colors"
                   >
-                    {process.env.NEXT_PUBLIC_ALTERNATE_NUMBER || "+91 96067 12763"}
+                    {getAlternateWhatsAppNumber()}
                   </a>
                 </div>
               </div>
-              <a
-                href="mailto:info@theluxbasketgift.com"
-                className="flex items-center gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
-              >
-                <Mail size={14} className="text-gold flex-shrink-0" />
-                info@theluxbasketgift.com
-              </a>
+              <div className="space-y-2">
+                {CONTACT_EMAILS.map((email) => (
+                  <a
+                    key={email}
+                    href={`mailto:${email}`}
+                    onClick={() => trackEvent("contact_click", { section: "footer", channel: "email" })}
+                    className="flex items-center gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
+                  >
+                    <Mail size={14} className="text-gold flex-shrink-0" />
+                    {email}
+                  </a>
+                ))}
+              </div>
               <a 
                 href="https://share.google/GtPJZ4jH28vCTJ8bp" 
+                  onClick={() => trackEvent("outbound_click", { section: "footer", destination: "maps" })}
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="flex items-start gap-3 text-sm font-body text-ivory/60 hover:text-gold transition-colors"
@@ -173,8 +189,6 @@ export default function Footer() {
             <div className="flex items-center gap-4 mt-6">
               {[
                 { href: "https://www.instagram.com/theluxbasketgift/?utm_source=ig_web_button_share_sheet", icon: Instagram, label: "Instagram" },
-                { href: "#", icon: Facebook, label: "Facebook" },
-                { href: "#", icon: Twitter, label: "Twitter" },
               ].map(({ href, icon: Icon, label }) => (
                 <a
                   key={label}
@@ -183,6 +197,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   aria-label={label}
                   className="w-9 h-9 rounded-none border border-ivory/20 flex items-center justify-center text-ivory/60 hover:text-gold hover:border-gold transition-all duration-200"
+                  onClick={() => href !== "#" && trackEvent("outbound_click", { section: "footer_social", destination: label.toLowerCase() })}
                 >
                   <Icon size={15} />
                 </a>
@@ -252,11 +267,20 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-14 pt-8 border-t border-ivory/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-body text-ivory/40 text-center">
-            © {new Date().getFullYear()} The Lux Basket. All rights reserved.
-          </p>
+          <div className="flex flex-col items-center gap-2 sm:items-start">
+            <p className="text-xs font-body text-ivory/40 text-center">
+              © {new Date().getFullYear()} The Lux Basket. All rights reserved.
+            </p>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("luxbasket:open-cookie-settings"))}
+              className="text-xs font-body text-ivory/50 underline underline-offset-2 hover:text-gold"
+            >
+              Cookie settings
+            </button>
+          </div>
           <div className="flex items-center gap-2">
-            {["VISA", "Mastercard", "UPI", "COD"].map((method) => (
+            {["VISA", "Mastercard", "UPI", "Netbanking"].map((method) => (
               <span
                 key={method}
                 className="px-3 py-1 border border-ivory/20 text-[10px] font-body text-ivory/40 tracking-wider"

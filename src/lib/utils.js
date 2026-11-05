@@ -45,6 +45,15 @@ export function generateOrderId() {
 }
 
 export function getWhatsAppUrl(phone, message) {
+  const number = String(phone || getWhatsAppNumber()).replace(/[^0-9]/g, "");
   const encodedMsg = encodeURIComponent(message);
-  return `https://wa.me/${phone.replace(/[^0-9]/g, "")}?text=${encodedMsg}`;
+  return `https://wa.me/${number}?text=${encodedMsg}`;
+}
+
+export function getWhatsAppNumber() {
+  return process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "+91 9686189610";
+}
+
+export function getAlternateWhatsAppNumber() {
+  return process.env.NEXT_PUBLIC_ALTERNATE_NUMBER || "+91 96067 12763";
 }

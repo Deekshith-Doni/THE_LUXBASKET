@@ -1,9 +1,11 @@
 import FAQSection from "@/components/home/FAQSection";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata = {
-  title: "FAQs | The Lux Basket",
-  description: "Frequently asked questions about our luxury gifting services.",
-};
+export const metadata = createPageMetadata({
+  title: "Frequently Asked Questions",
+  description: "Answers to common questions about ordering, delivery, custom gifts, and support from The Lux Basket.",
+  path: "/faq",
+});
 
 export default function FAQPage() {
   return (

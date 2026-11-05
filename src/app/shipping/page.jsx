@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Shipping Policy | The Lux Basket",
-  description: "Learn about our shipping and delivery policies.",
-};
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Shipping and Delivery",
+  description: "Find information about The Lux Basket shipping, delivery timelines, and order fulfilment.",
+  path: "/shipping",
+});
 
 export default function ShippingPolicyPage() {
   return (

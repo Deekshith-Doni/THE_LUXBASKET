@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { auth } from "@/lib/auth";
+import connectDB from "@/lib/mongodb";
+import Order from "@/models/Order";
+import { resolveDbUserId } from "@/lib/resolveDbUserId";
 
 export async function POST(req) {
   try {
@@ -9,29 +12,43 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { amount, receipt } = await req.json();
-
-    if (!amount) {
+    const { receipt } = await req.json();
+    if (typeof receipt !== "string" || !receipt.trim()) {
       return NextResponse.json(
-        { error: "Amount is required" },
+        { error: "Order reference is required" },
         { status: 400 },
       );
     }
 
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keyId || !keySecret) {
+      return NextResponse.json({ error: "Payment service is not configured" }, { status: 503 });
+    }
+
+    await connectDB();
+    const dbUserId = await resolveDbUserId(session);
+    if (!dbUserId) return NextResponse.json({ error: "User profile not found" }, { status: 404 });
+    const orderRecord = await Order.findOne({ orderId: receipt.trim(), user: dbUserId, paymentStatus: "pending" });
+    if (!orderRecord) return NextResponse.json({ error: "Pending order not found" }, { status: 404 });
+
     const razorpay = new Razorpay({
-      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
+      key_id: keyId,
+      key_secret: keySecret,
     });
 
     const options = {
-      amount: amount * 100, // Razorpay works in paise (1 INR = 100 paise)
+      amount: Math.round(Number(orderRecord.total) * 100), // Amount comes from the server-validated order.
       currency: "INR",
-      receipt: receipt || `rcpt_${Date.now()}`,
+      receipt: orderRecord.orderId,
+      payment_capture: 1,
     };
 
-    const order = await razorpay.orders.create(options);
+    const razorpayOrder = await razorpay.orders.create(options);
+    orderRecord.razorpayOrderId = razorpayOrder.id;
+    await orderRecord.save();
 
-    return NextResponse.json({ success: true, order }, { status: 200 });
+    return NextResponse.json({ success: true, order: razorpayOrder }, { status: 200 });
   } catch (error) {
     console.error("Razorpay create-order error:", error);
     return NextResponse.json(

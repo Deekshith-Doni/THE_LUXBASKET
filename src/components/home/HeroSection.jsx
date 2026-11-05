@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 export default function HeroSection() {
   const [banners, setBanners] = useState([]);
@@ -112,7 +113,7 @@ export default function HeroSection() {
     <section
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative min-h-screen flex items-center overflow-hidden bg-emerald-dark"
+      className="home-hero group relative flex items-center overflow-hidden bg-emerald-dark"
     >
       {/* Animated / Ken Burns Background Slide */}
       <div className="absolute inset-0 z-0">
@@ -178,7 +179,7 @@ export default function HeroSection() {
       />
 
       {/* Content */}
-      <div className="container-luxury relative z-20 py-24 lg:py-0">
+      <div className="container-luxury relative z-20 py-12 sm:py-16 lg:py-20">
         <div className="max-w-3xl">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
@@ -210,7 +211,7 @@ export default function HeroSection() {
                   },
                 }),
               }}
-              className="space-y-6"
+              className="space-y-4 md:space-y-5"
             >
               {/* Tag */}
               <motion.div variants={childVariants} className="flex items-center gap-2 mb-2">
@@ -222,7 +223,7 @@ export default function HeroSection() {
               {/* Heading */}
               <motion.h1
                 variants={childVariants}
-                className="font-heading text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-ivory leading-[1.05] text-balance"
+                className="font-heading text-[clamp(2.75rem,12vw,4.25rem)] sm:text-[clamp(3.5rem,6.5vw,5.5rem)] lg:text-[clamp(4rem,5.4vw,5.75rem)] font-light text-ivory leading-[1.02] tracking-[-0.025em] text-balance max-w-[14ch]"
               >
                 {formatTitle(currentBanner.title)}
               </motion.h1>
@@ -237,20 +238,28 @@ export default function HeroSection() {
               {currentBanner.subtitle && (
                 <motion.p
                   variants={childVariants}
-                  className="text-lg md:text-xl font-body font-light text-ivory/70 max-w-xl leading-relaxed"
+                  className="text-[0.95rem] sm:text-base lg:text-lg font-body font-light text-ivory/80 max-w-xl leading-7"
                 >
                   {currentBanner.subtitle}
                 </motion.p>
               )}
 
               {/* CTAs */}
-              <motion.div variants={childVariants} className="flex flex-wrap gap-4 pt-4">
-                <Link href={currentBanner.link || "/collections"} className="btn-gold">
+              <motion.div variants={childVariants} className="flex flex-wrap gap-3 pt-1">
+                <Link
+                  href={currentBanner.link || "/collections"}
+                  className="btn-gold min-h-11 px-5 py-3 md:px-8 md:py-4"
+                  onClick={() => trackEvent("cta_click", { section: "hero", item_name: currentBanner.buttonText || "Shop Now" })}
+                >
                   {currentBanner.buttonText || "Shop Now"}
                   <ArrowRight size={16} />
                 </Link>
                 {currentBanner.link !== "/corporate" && (
-                  <Link href="/corporate" className="btn-outline-gold">
+                  <Link
+                    href="/corporate"
+                    className="btn-outline-gold min-h-11 px-5 py-3 md:px-8 md:py-4"
+                    onClick={() => trackEvent("cta_click", { section: "hero", item_name: "Corporate Gifting" })}
+                  >
                     Corporate Gifting
                   </Link>
                 )}
@@ -287,29 +296,29 @@ export default function HeroSection() {
         <>
           <button
             onClick={handlePrev}
-            className="absolute left-6 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full border border-ivory/10 bg-emerald-dark/30 text-ivory/60 hover:text-gold hover:border-gold hover:bg-gold/10 hover:scale-105 transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center"
+            className="absolute left-3 md:left-6 bottom-5 md:bottom-auto md:top-1/2 -translate-y-0 md:-translate-y-1/2 z-30 w-11 h-11 rounded-full border border-ivory/20 bg-emerald-dark/50 text-ivory hover:text-gold hover:border-gold hover:bg-gold/10 transition-all duration-300 backdrop-blur-md flex items-center justify-center"
             aria-label="Previous slide"
           >
             <ChevronLeft size={22} className="transition-transform duration-300 hover:-translate-x-0.5" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-6 top-1/2 -translate-y-1/2 z-30 p-4 rounded-full border border-ivory/10 bg-emerald-dark/30 text-ivory/60 hover:text-gold hover:border-gold hover:bg-gold/10 hover:scale-105 transition-all duration-300 backdrop-blur-md opacity-0 group-hover:opacity-100 hidden md:flex items-center justify-center"
+            className="absolute right-3 md:right-6 bottom-5 md:bottom-auto md:top-1/2 -translate-y-0 md:-translate-y-1/2 z-30 w-11 h-11 rounded-full border border-ivory/20 bg-emerald-dark/50 text-ivory hover:text-gold hover:border-gold hover:bg-gold/10 transition-all duration-300 backdrop-blur-md flex items-center justify-center"
             aria-label="Next slide"
           >
             <ChevronRight size={22} className="transition-transform duration-300 hover:translate-x-0.5" />
           </button>
 
           {/* Dots Indicator */}
-          <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3">
+          <div className="absolute bottom-8 md:bottom-28 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1">
             {displayBanners.map((_, index) => (
               <button
                 key={index}
                 onClick={() => selectSlide(index)}
-                className={`h-2 rounded-full transition-all duration-500 relative ${
+                className={`min-w-11 min-h-11 flex items-center justify-center after:block after:h-2 after:rounded-full after:transition-all after:duration-500 ${
                   currentIndex === index
-                    ? "w-8 bg-gold shadow-[0_0_12px_rgba(212,175,55,0.6)]"
-                    : "w-2 bg-ivory/20 hover:bg-ivory/50"
+                    ? "after:w-8 after:bg-gold after:shadow-[0_0_12px_rgba(212,175,55,0.6)]"
+                    : "after:w-2 after:bg-ivory/40 hover:after:bg-ivory"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -323,7 +332,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+        className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 z-20 hidden sm:flex"
       >
         <span className="text-xs font-body text-ivory/30 tracking-widest uppercase">Scroll</span>
         <motion.div

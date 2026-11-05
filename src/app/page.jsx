@@ -6,20 +6,23 @@ import FAQSection from "@/components/home/FAQSection";
 
 import BestSellers from "@/components/home/BestSellers";
 import MarqueeBanner from "@/components/home/MarqueeBanner";
+import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = {
-  title: "The Lux Basket | Premium Luxury Gifting in India",
-  description:
-    "Shop India's finest luxury gift hampers. Corporate gifting, wedding return gifts, festive hampers & customized gifts. Premium quality, elegant packaging, pan-India delivery.",
+  ...createPageMetadata({
+    title: { absolute: "The Lux Basket | Premium Luxury Gifting in India" },
+    description: "Shop India's finest luxury gift hampers. Corporate gifting, wedding return gifts, festive hampers and customized gifts, with elegant pan-India delivery.",
+    path: "/",
+  }),
 };
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
-      <MarqueeBanner />
-      <FeaturedCollections />
       <BestSellers />
+      <FeaturedCollections />
+      <MarqueeBanner />
       <CorporateSection />
 
 

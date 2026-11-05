@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="48%" r="75%">
+      <stop offset="0" stop-color="#174b43"/>
+      <stop offset="1" stop-color="#082725"/>
+    </radialGradient>
+    <pattern id="lines" width="36" height="36" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0V36" stroke="#d4af37" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#lines)"/>
+  <rect x="32" y="32" width="1136" height="566" rx="20" fill="none" stroke="#d4af37" stroke-opacity=".72" stroke-width="2"/>
+  <rect x="48" y="48" width="1104" height="534" rx="14" fill="none" stroke="#f8f5f0" stroke-opacity=".14" stroke-width="1"/>
+  <circle cx="600" cy="188" r="2" fill="#e8c860"/>
+  <path d="M470 188H555M645 188H730" stroke="#d4af37" stroke-opacity=".7" stroke-width="1"/>
+  <text x="600" y="285" text-anchor="middle" fill="#e8c860" font-family="Arial,sans-serif" font-size="18" letter-spacing="8">PREMIUM GIFT HAMPERS · INDIA</text>
+  <text x="600" y="375" text-anchor="middle" fill="#f8f5f0" font-family="Georgia,serif" font-size="66" letter-spacing="2">THE LUX BASKET</text>
+  <path d="M500 415H700" stroke="#d4af37" stroke-width="2"/>
+  <text x="600" y="470" text-anchor="middle" fill="#f8f5f0" fill-opacity=".86" font-family="Arial,sans-serif" font-size="19" letter-spacing="6">THE FINER WAY TO GIFTING</text>
+  <text x="600" y="535" text-anchor="middle" fill="#e8c860" fill-opacity=".8" font-family="Arial,sans-serif" font-size="14" letter-spacing="3">CURATED WITH CARE · DELIVERED WITH ELEGANCE</text>
+</svg>

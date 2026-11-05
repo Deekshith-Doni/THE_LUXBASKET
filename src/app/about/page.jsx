@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { Award, Heart, Leaf, Star } from "lucide-react";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata = {
-  title: "About Us | The Lux Basket",
-  description:
-    "Discover the story behind The Lux Basket — India's premium luxury gifting brand. Our mission, values, and commitment to excellence.",
-};
+export const metadata = createPageMetadata({
+  title: "About Us",
+  description: "Discover The Lux Basket and our approach to premium gifting, thoughtful curation, and elegant presentation.",
+  path: "/about",
+});
 
 const values = [
   {

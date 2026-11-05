@@ -1,46 +1,67 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, Star, Eye } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { formatPrice, calculateDiscount } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatPrice, calculateDiscount, cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import toast from "react-hot-toast";
 
-export default function ProductCard({ product, className }) {
+const FALLBACK_IMAGE = "/placeholder-product.svg";
+
+export default function ProductCard({ product, className, section = "product_list", position }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const [imageFailed, setImageFailed] = useState(false);
   const { addItem, openCart } = useCartStore();
   const { toggleItem, isInWishlist } = useWishlistStore();
   const inWishlist = isInWishlist(product._id);
-
+  const images = Array.isArray(product.images) ? product.images : [];
+  const image = imageFailed ? FALLBACK_IMAGE : images[imgIndex] || images[0] || FALLBACK_IMAGE;
   const price = product.discountPrice || product.price;
   const discount = product.discountPrice
     ? calculateDiscount(product.price, product.discountPrice)
     : 0;
 
-  const handleAddToCart = (e) => {
-    e.preventDefault();
+  const trackProductClick = () => {
+    trackEvent("select_item", {
+      item_list_name: section,
+      items: [{ item_id: product._id, item_name: product.name, price }],
+    });
+    trackEvent("product_click", {
+      item_name: product.name,
+      section,
+      ...(position ? { position } : {}),
+    });
+  };
+
+  const handleAddToCart = () => {
+    const value = price;
     addItem({
       id: product._id,
       name: product.name,
-      image: product.images[0],
+      image: images[0] || FALLBACK_IMAGE,
       price,
       quantity: 1,
       slug: product.slug,
+    });
+    trackEvent("add_to_cart", {
+      currency: "INR",
+      value,
+      items: [{ item_id: product._id, item_name: product.name, price, quantity: 1 }],
     });
     openCart();
     toast.success("Added to your basket!");
   };
 
-  const handleWishlist = (e) => {
-    e.preventDefault();
+  const handleWishlist = () => {
     toggleItem({
       id: product._id,
       name: product.name,
-      image: product.images[0],
+      image: images[0] || FALLBACK_IMAGE,
       price: product.price,
       discountPrice: product.discountPrice,
       slug: product.slug,
@@ -51,135 +72,85 @@ export default function ProductCard({ product, className }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.article
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className={cn("product-card group relative flex flex-col justify-between h-full", className)}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.35 }}
+      className={cn("product-card group relative flex flex-col h-full", className)}
     >
-      {/* Image & Overlays container */}
       <div
         className="relative overflow-hidden bg-beige-light aspect-square"
-        onMouseEnter={() => product.images[1] && setImgIndex(1)}
+        onMouseEnter={() => images[1] && setImgIndex(1)}
         onMouseLeave={() => setImgIndex(0)}
       >
-        <Link href={`/product/${product.slug}`} className="block w-full h-full">
+        <Link
+          href={`/product/${product.slug}`}
+          className="block w-full h-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-gold"
+          onClick={trackProductClick}
+          aria-label={`View ${product.name}`}
+        >
           <Image
-            src={product.images[imgIndex] || "/placeholder-product.jpg"}
-            alt={product.name}
+            src={image}
+            alt={product.name || "Gift hamper"}
             fill
-            className="object-cover transition-all duration-700 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            sizes="(max-width: 639px) 44vw, (max-width: 1023px) 32vw, 24vw"
           />
         </Link>
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col items-start gap-2 pointer-events-none z-10">
-          {product.isNewArrival && (
-            <span className="badge-emerald text-xs">New</span>
-          )}
-          {discount > 0 && (
-            <span className="badge-sale text-xs">-{discount}%</span>
-          )}
-          {product.isBestSeller && (
-            <span className="badge-gold text-xs">Best Seller</span>
-          )}
+        <div className="absolute top-2 left-2 flex flex-col items-start gap-1 pointer-events-none">
+          {product.isNewArrival && <span className="badge-emerald text-[9px]">New</span>}
+          {discount > 0 && <span className="badge-sale text-[9px]">-{discount}%</span>}
+          {product.isBestSeller && <span className="badge-gold text-[9px]">Best Seller</span>}
         </div>
 
-        {/* Actions Overlay */}
-        <div className="absolute right-3 top-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 z-10">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={handleWishlist}
-            className={cn(
-              "w-9 h-9 flex items-center justify-center bg-white shadow-md transition-colors",
-              inWishlist
-                ? "text-red-500"
-                : "text-charcoal/60 hover:text-red-500",
-            )}
-            aria-label="Add to wishlist"
-          >
-            <Heart size={16} fill={inWishlist ? "currentColor" : "none"} />
-          </motion.button>
-
-          <Link
-            href={`/product/${product.slug}`}
-            className="w-9 h-9 flex items-center justify-center bg-white shadow-md text-charcoal/60 hover:text-emerald transition-colors"
-            aria-label="Quick view"
-          >
-            <Eye size={16} />
-          </Link>
-        </div>
-
-        {/* Add to Cart Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-emerald/95 py-3 text-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-full group-hover:translate-y-0 z-10">
-          <button
-            onClick={handleAddToCart}
-            className="flex items-center justify-center gap-2 w-full text-ivory text-xs font-body font-semibold tracking-widest uppercase"
-          >
-            <ShoppingBag size={14} />
-            Add to Basket
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={handleWishlist}
+          className={cn(
+            "absolute top-2 right-2 w-11 h-11 flex items-center justify-center bg-white/95 shadow-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold",
+            inWishlist ? "text-red-500" : "text-charcoal/70 hover:text-red-500",
+          )}
+          aria-label={inWishlist ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          aria-pressed={inWishlist}
+        >
+          <Heart size={18} fill={inWishlist ? "currentColor" : "none"} />
+        </button>
       </div>
 
-      {/* Product Info */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
-        <div>
-          <p className="text-xs font-body text-charcoal/40 tracking-widest uppercase mb-1">
-            {typeof product.category === "object" ? product.category.name : ""}
-          </p>
-          <Link href={`/product/${product.slug}`} className="block">
-            <h3 className="font-heading text-base font-medium text-charcoal group-hover:text-emerald transition-colors duration-200 line-clamp-2 leading-snug">
-              {product.name}
-            </h3>
-          </Link>
+      <div className="p-3 sm:p-4 flex flex-1 flex-col">
+        <p className="text-[10px] sm:text-xs font-body text-charcoal/55 tracking-wider uppercase mb-1 line-clamp-1">
+          {typeof product.category === "object" ? product.category?.name : ""}
+        </p>
+        <Link href={`/product/${product.slug}`} onClick={trackProductClick} className="block focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold">
+          <h3 className="font-heading text-base sm:text-lg font-medium text-charcoal group-hover:text-emerald transition-colors line-clamp-2 leading-snug min-h-[2.7em]">
+            {product.name}
+          </h3>
+        </Link>
 
-          {/* Rating */}
-          {product.numReviews > 0 && (
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    size={10}
-                    className={
-                      star <= Math.round(product.rating)
-                        ? "text-gold fill-gold"
-                        : "text-charcoal/20"
-                    }
-                  />
-                ))}
-              </div>
-              <span className="text-xs font-body text-charcoal/40">
-                ({product.numReviews})
-              </span>
-            </div>
-          )}
-        </div>
-
-        <div>
-          {/* Price */}
-          <div className="flex items-center gap-2 mt-2">
-            <span className="font-heading text-lg font-medium text-emerald">
-              {formatPrice(price)}
+        <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0 mt-2">
+          <span className="font-heading text-lg sm:text-xl font-medium text-emerald">
+            {formatPrice(price)}
+          </span>
+          {product.discountPrice && (
+            <span className="text-xs sm:text-sm font-body text-charcoal/50 line-through">
+              {formatPrice(product.price)}
             </span>
-            {product.discountPrice && (
-              <span className="text-sm font-body text-charcoal/40 line-through">
-                {formatPrice(product.price)}
-              </span>
-            )}
-          </div>
-
-          {/* Customization tag */}
-          {product.customizationOptions?.available && (
-            <p className="text-[10px] font-body text-gold tracking-wide mt-1">
-              ✦ Customization available
-            </p>
           )}
         </div>
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          className="mt-3 min-h-11 w-full inline-flex items-center justify-center gap-2 bg-emerald px-2 py-2 text-[11px] sm:text-xs font-body font-semibold tracking-wider uppercase text-ivory transition-colors hover:bg-emerald-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        >
+          <ShoppingBag size={15} />
+          Add to Basket
+        </button>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

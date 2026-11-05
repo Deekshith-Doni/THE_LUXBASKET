@@ -14,6 +14,7 @@ import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { trackEvent } from "@/lib/analytics";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, clearCart } =
@@ -256,6 +257,11 @@ export default function CartPage() {
 
               <Link
                 href="/checkout"
+                onClick={() => trackEvent("begin_checkout", {
+                  currency: "INR",
+                  value: total,
+                  items: items.map((item) => ({ item_id: item.id, item_name: item.name, price: item.price, quantity: item.quantity })),
+                })}
                 className="btn-primary w-full justify-center mt-5"
               >
                 Proceed to Checkout <ArrowRight size={16} />

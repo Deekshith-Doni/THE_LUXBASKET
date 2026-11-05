@@ -1,7 +1,10 @@
-export const metadata = {
-  title: "Return Policy | The Lux Basket",
-  description: "Information regarding our return and exchange policies.",
-};
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "Returns and Exchanges",
+  description: "Review The Lux Basket return and exchange information before placing an order.",
+  path: "/returns",
+});
 
 export default function ReturnPolicyPage() {
   return (

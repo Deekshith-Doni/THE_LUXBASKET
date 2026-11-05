@@ -117,9 +117,15 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=+91XXXXXXXXXX
 # App Config
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_APP_NAME=The LuxBasket
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-6VRQNFPYC1
+
+# Razorpay (public key ID can be exposed; keep both secrets server-side)
+NEXT_PUBLIC_RAZORPAY_KEY_ID=your-public-razorpay-key-id
+RAZORPAY_KEY_SECRET=your-server-only-razorpay-key-secret
+RAZORPAY_WEBHOOK_SECRET=your-server-only-razorpay-webhook-secret
 
 # Admin
-ADMIN_EMAIL=admin@theluxbasket.com
+ADMIN_EMAIL=info@theluxbasketgift.com,theluxbasketgifting@gmail.com
 JWT_SECRET=your-jwt-secret-key
 ```
 

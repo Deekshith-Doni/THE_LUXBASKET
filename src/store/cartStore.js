@@ -38,6 +38,8 @@ export const useCartStore = create()(
 
       clearCart: () => set({ items: [] }),
 
+      replaceItems: (items) => set({ items }),
+
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),

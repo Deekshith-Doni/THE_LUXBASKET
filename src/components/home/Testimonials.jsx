@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Quote } from "lucide-react";
 
 const testimonials = [
   {
@@ -10,7 +10,6 @@ const testimonials = [
     company: "TechCorp India",
     content:
       "The Lux Basket transformed our Diwali gifting completely. Every employee was absolutely delighted — the quality and presentation exceeded all expectations. Will definitely order again!",
-    rating: 5,
   },
   {
     id: 2,
@@ -19,7 +18,6 @@ const testimonials = [
     company: "StartupHub",
     content:
       "We ordered 200 custom hampers for our investor meet. The branding was perfect, packaging was immaculate, and delivery was on time. Truly premium experience.",
-    rating: 5,
   },
   {
     id: 3,
@@ -28,7 +26,6 @@ const testimonials = [
     company: "Dream Weddings",
     content:
       "My clients loved the wedding return gifts from The Lux Basket. The customization options are incredible and every guest mentioned how beautiful the packaging was.",
-    rating: 5,
   },
   {
     id: 4,
@@ -37,7 +34,6 @@ const testimonials = [
     company: "Nair & Sons",
     content:
       "We've been using The Lux Basket for all our corporate gifting needs for 2 years. The consistency in quality and the luxury feel of every hamper keeps us coming back.",
-    rating: 5,
   },
 ];
 
@@ -89,13 +85,6 @@ export default function Testimonials() {
                 className="text-gold/20 absolute top-6 right-6 group-hover:text-gold/30 transition-colors"
               />
 
-              {/* Stars */}
-              <div className="flex mb-4">
-                {[...Array(t.rating)].map((_, j) => (
-                  <Star key={j} size={14} className="text-gold fill-gold" />
-                ))}
-              </div>
-
               <p className="font-body text-charcoal/70 leading-relaxed italic">
                 &ldquo;{t.content}&rdquo;
               </p>
@@ -119,26 +108,6 @@ export default function Testimonials() {
           ))}
         </div>
 
-        {/* Overall Rating */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-12"
-        >
-          <div className="inline-flex items-center gap-4 bg-white border border-beige px-8 py-4">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} size={20} className="text-gold fill-gold" />
-              ))}
-            </div>
-            <span className="font-heading text-2xl text-charcoal">4.9/5</span>
-            <span className="text-sm font-body text-charcoal/50">
-              Based on 1,200+ reviews
-            </span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
